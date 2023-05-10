@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Badge, Button, Col, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { Savetable } from '../../Data/Pages/TablesData/DataEditable';
+import { Badge, Button, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Datatable from '../Helper/Datatable';
-import { ADDLANGUAGE, GETLANGUAGE } from '../../services/api/Hrms';
+import { ADDLANGUAGE, DELETELANGUAGE, GETLANGUAGE } from '../../services/api/Hrms';
 import { Link } from 'react-router-dom';
 import { ToastLeft } from '../../services/notification/Notification';
-
 
 export const COLUMNS = [
     {
@@ -39,7 +37,6 @@ export const COLUMNS = [
 export default function AddLanguage(props) {
     const [modalShow, setModalShow] = useState(false);
     const [data,setData] = useState([])
-    const [contacts, setContacts] = useState(data);
 
     const [addFormData, setAddFormData] = useState({
         language  : "",
@@ -56,13 +53,21 @@ export default function AddLanguage(props) {
             READ        : res.ReadSkill ? <Badge bg="success">True</Badge> : <Badge bg="danger">False</Badge>,
             WRITE       : res.WriteSkill ? <Badge bg="success">True</Badge> : <Badge bg="danger">False</Badge> ,   
             SPEAK       : res.SpeakSkill ? <Badge bg="success">True</Badge> : <Badge bg="danger">False</Badge>, 
-            ACTION      : <Link to={`/editlanguage/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Delete</Tooltip>}><span className="fe fe-trash me-2 text-primary"></span></OverlayTrigger></Link>
+            ACTION      : <Link onClick={() => deleteLanguage(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Delete</Tooltip>}><span className="fe fe-trash me-2 text-primary"></span></OverlayTrigger></Link>
         }))
-        setData(tableData)
-    }).catch(err => {
-        ToastLeft(err.message,"Failed");
-    })
+            setData(tableData)
+        }).catch(err => {
+            ToastLeft(err.message,"Failed");
+        })
     }
+
+    let deleteLanguage = async (id) =>{
+        DELETELANGUAGE(id).then(res => {
+            getLanguage()
+        }).catch(err => {
+
+        })
+    }  
 
     const handleAddFormChange = (event) => {
         event.preventDefault();
@@ -101,8 +106,6 @@ export default function AddLanguage(props) {
         }).catch(err => {
             ToastLeft(err.message,"Failed");
         })
-        const newContacts = [...contacts, newLanguage];
-        setContacts(newContacts);
     };
 
     useEffect(() => {
@@ -111,10 +114,11 @@ export default function AddLanguage(props) {
 
   return (
     <>
+    <pre>{JSON.stringify(data)}</pre>
      <div className="row">
       <div className='col-md-12 '>
         <Button variant="" className="btn btn-primary mb-3" onClick={() => setModalShow(true)} >
-          Add New Row
+          Add New Language
         </Button>
         <br />
         <Datatable data={data} col={COLUMNS} />
