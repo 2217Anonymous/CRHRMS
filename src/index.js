@@ -5,6 +5,7 @@ import "./index.scss";
 import { ToastContainer } from 'react-toastify';
 import { Provider } from 'react-redux';
 import store from './Redux/store/Store';
+import Loader from './layouts/Loader/Loader';
 
 const Sortscript      = lazy(() => import('./pages/Sortscript/Utility'));
 const AdminLogin      = lazy(() => import('./components/authentication/admin/AdminLogin'));
@@ -54,7 +55,7 @@ root.render(
     <Fragment>
       <BrowserRouter>
       <ToastContainer />
-          <React.Suspense fallback="loading">
+          <React.Suspense fallback=<Loader />>
             <Provider store={store}>
               <Routes>
                 <Route index element={<Login />} />
