@@ -1,0 +1,4 @@
+.Header .transparent-mode .app-header {
+  -webkit-backdrop-filter: blur(0.25rem) !important;
+          backdrop-filter: blur(0.25rem) !important;
+}/*# sourceMappingURL=Header.module.css.map */
