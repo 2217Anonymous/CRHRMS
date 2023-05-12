@@ -114,6 +114,7 @@ export default function Users() {
                         <Link to={'/newuser'} className='btn btn-sm btn-success'>Add New User <b>+</b></Link>{ }
                     </div>
                 </div>
+                <br></br>
                 <Datatable data={DATATABLE} col={COLUMNS} />
             </Card.Body>
         </Card>       

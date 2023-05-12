@@ -363,10 +363,8 @@ export default function UpdateCandidate(props) {
   }
   return (
     <>
-    <pre>{JSON.stringify(gender)}</pre>
     <ToastContainer />
-    <Card>
-      <Card.Body>
+
         <div className='panel-group1'>
           {/* PERSONAL */}
           <div className='mb-4'>
@@ -933,8 +931,6 @@ export default function UpdateCandidate(props) {
             )  : (<Loader />)
           }
         </div>
-      </Card.Body>
-    </Card>
     </>
   )
 }

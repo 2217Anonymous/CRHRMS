@@ -11,6 +11,8 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import { getUserData } from '../../services/storage/Storage'
 import { isAuthenticated } from '../../services/Auth'
+import { checkPermission } from '../../services/Permission'
+import AuthError from '../authentication/errorPage/AuthError/AuthError'
 
 const authToken = getUserData()
 
@@ -86,12 +88,17 @@ export default function CompanyList() {
                 isCrmhave   : res.IsCrmhave ? <Badge bg="success">Yes</Badge> : <Badge bg="danger">No</Badge>,
                 status      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
                 action      : (<>
-                                <Link to={`/editcompany/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Edit</Tooltip>}><span className="fe fe-edit me-2 text-primary"></span></OverlayTrigger></Link> 
-                                { res.IsActive ?
-                                <Link onClick={() => statusClick(res.ParamStr)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
-                                : <Link onClick={() => statusClick(res.ParamStr)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link> 
+                                {
+                                    checkPermission('Companies_Edit') ? (
+                                        <>
+                                            <Link to={`/editcompany/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Edit</Tooltip>}><span className="fe fe-edit me-2 text-primary"></span></OverlayTrigger></Link>
+                                            {
+                                                res.IsActive ? <Link onClick={() => statusClick(res.ParamStr)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
+                                                : <Link onClick={() => statusClick(res.ParamStr)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link> 
+                                            }
+                                        </>
+                                    ) : ''
                                 }
-
                             </>)
             }))
             setDatatable(tableData)
@@ -118,17 +125,21 @@ export default function CompanyList() {
 
   return (
     <>
-    <PageHeader titles="Company List" active="company" items={['Home']} />
+    <PageHeader titles="" active="company" items={['Home']} />
     <Row>
           <Col xl={12}>
               <ToastContainer />
               <Card>
                     <Card.Header>
                         <Card.Title as="h3">Company List</Card.Title>
-                        <Link to={'/newcompany'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success'>Add company</Link>
+                        {
+                            checkPermission('Companies_Add') ? <Link to={'/newcompany'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-sm btn-success'>Add company</Link> : ''
+                        }
                     </Card.Header>
                     <Card.Body>
-                        <Datatable data={datatable} col={col} />
+                    {
+                        checkPermission('Companies_List') ? <Datatable data={datatable} col={col} /> : <AuthError />
+                    }
                     </Card.Body>
               </Card>
           </Col>

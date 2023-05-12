@@ -10,12 +10,16 @@ import { getUserData } from '../../services/storage/Storage';
 import { CityList, CountryList, StateList } from '../../services/api/Utility';
 import { NEW_COMPANY } from '../../services/api/Company';
 import { ToastLeft } from '../../services/notification/Notification';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../../services/loader/Loader';
+import { checkPermission } from '../../services/Permission';
+import AuthError from '../authentication/errorPage/AuthError/AuthError';
+import { isAuthenticated } from '../../services/Auth';
 
 const authToken = getUserData()
 
 export default function AddCompany() {
+    const navigate = useNavigate()
     //State Management
     const [isCrm, setIsCrm] = useState(false)
     const [loading,setLoading] = useState(false)
@@ -73,7 +77,6 @@ export default function AddCompany() {
         })
         
         getCountry()
-        
     },[])
 
     //Initial values
@@ -162,16 +165,21 @@ export default function AddCompany() {
         onSubmit,
     })
 
+    if(!isAuthenticated()){
+        navigate('/')
+    }
   return (
     <>
-      <PageHeader titles="New Company" active="company" items={['Home']} />
+      <PageHeader titles="" active="company" items={['Home']} />
       <Row>
             <Col xl={12}>
                 <ToastContainer />
                 <Card>
                     <Card.Header>
                         <Card.Title as="h3">New Company Register</Card.Title>
-                        <Link to={'/companies'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success'>Company</Link>
+                        {
+                            checkPermission('Companies_List') ? <Link to={'/companies'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success'>Company List</Link> : ''
+                        }   
                     </Card.Header>
                     <Card.Body>
                         <div className='row'>

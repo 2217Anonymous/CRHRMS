@@ -58,7 +58,7 @@ export default function EmployeeList() {
       const tableData = data.map((res) => ({
         Name        : res.FirstName,
         Gender      : res.Gender,
-        DateOfBirth : res.DateOfBirth,
+        DateOfBirth : res.DateOfBirth.slice(0,10),
         Age         : res.Age,
         BloodGroup  : res.BloodGroup,
         status      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
@@ -86,6 +86,7 @@ export default function EmployeeList() {
 
   return (
     <>
+
       <PageHeader titles="Candidate" active="Hrme" items={['Candidate']} />
       <Card>
           <Card.Body className="pb-0">

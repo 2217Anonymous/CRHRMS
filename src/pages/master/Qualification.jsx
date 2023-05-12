@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Badge, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap'
+import { Badge, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
-import { useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table'
 import { GETQUALIFICATION, INSERTQUALIFICATION, QUALIFICATIONSTATUS } from '../../services/api/Master'
 import axios from 'axios'
 import { useFormik } from 'formik'
@@ -11,10 +10,10 @@ import PageHeader from '../../layouts/PageHeader/PageHeader'
 import { getUserData } from '../../services/storage/Storage'
 import Loader from '../../services/loader/Loader'
 import { ToastLeft } from '../../services/notification/Notification'
-import { checkPermission } from '../../services/Permission'
 import Datatable from '../../components/Helper/Datatable'
 import { isAuthenticated } from '../../services/Auth'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchQualificationData } from '../../Redux/slice/Master/Qualification'
 
 const authToken = getUserData()
 
@@ -46,22 +45,6 @@ export default function Qualification() {
     const navigate = useNavigate()
     const [loading,setLoading] = useState(true)
     const [DATATABLE,setDATATABLE] = useState([])
-
-    const getQualificationList = (() => {
-        GETQUALIFICATION().then((res) => {
-            const data = res.data.Data
-            const tableData = data.map((res) => ({
-              QUALIFICATION : res.Qualification,
-              DESCRIPTION : res.Description,
-              STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
-              ACTION      : res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
-              : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
-            }))
-            setDATATABLE(tableData)
-        }).catch((error) => {
-            ToastLeft(error.message,"Failed");
-        })
-    })
 
     const statusClick = (pk) => {
         QUALIFICATIONSTATUS(pk).then(res => {
@@ -127,6 +110,29 @@ export default function Qualification() {
             })
         }
     }) 
+
+    const dispatch = useDispatch()
+    const {qualificationList} = useSelector((state) => state.qualification);
+    
+    const getQualificationList = (() => {
+        GETQUALIFICATION().then((res) => {
+            const data = res.data.Data
+            const tableData = data.map((res) => ({
+              QUALIFICATION : res.Qualification,
+              DESCRIPTION : res.Description,
+              STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
+              ACTION      : res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
+              : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+            }))
+            setDATATABLE(tableData)
+        }).catch((error) => {
+            ToastLeft(error.message,"Failed");
+        })
+    })
+
+    useEffect(() => {
+        dispatch(fetchQualificationData())
+    },[dispatch])
 
     if(!isAuthenticated()){
         navigate('/')

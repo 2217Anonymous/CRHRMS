@@ -170,7 +170,6 @@ const Header = ({ local_varaiable,AddToCart }) => {
     setSelectedComId(e.target.value)
     setComId(e.target.value);
     storeCompanyId(e.target.value)
-    console.log(getComId());
   }
 
   const [comId,setComId] = useState()
@@ -178,6 +177,8 @@ const Header = ({ local_varaiable,AddToCart }) => {
 
   const dispatch = useDispatch()
   const {companyList} = useSelector((state) => state.company);
+
+  console.log(companyList);
 
   useEffect(() => {
     const authToken = getUserData()
@@ -209,9 +210,8 @@ const Header = ({ local_varaiable,AddToCart }) => {
               <Form.Group>
                 <select className='form-control' value={comId} required={true} onChange={getCompanyId} name="deptName" >
                     {
-                      companyList.Data && companyList.Data.filter((dt) => {
-                        return dt.IsActive
-                      }).map(res => (
+                      companyList.Data && companyList.Data.filter((dt) => dt.IsActive).map(res => 
+                      (
                         <option key={res.Id} value={res.Id}>{res.CompName}</option> 
                       ))  
                     }

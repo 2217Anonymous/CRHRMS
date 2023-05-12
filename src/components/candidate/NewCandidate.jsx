@@ -171,7 +171,6 @@ export default function NewEmployee() {
 
   const getMasterId = () => {
     GETRESUMEMASTERID().then(res => {
-      console.log(res.data.Data.Id);
       setMasterId(res.data.Data.Id)
   })
   
@@ -283,7 +282,6 @@ export default function NewEmployee() {
             on_submit.handleReset()
         }
         else if(res.data.result === 'Failed'){
-            console.log(res.data.Msg);
             ToastLeft(msg,type)
             setLoading(true)
         }
@@ -321,7 +319,6 @@ export default function NewEmployee() {
     <Card>
       <Card.Header className='d-sm-flex justify-content-between align-items-center d-block'>
         <Card.Title className='mb-3 mb-sm-0'>New Candidate</Card.Title>
-        
       </Card.Header>
       <Card.Body>
         <div className='panel-group1'>
@@ -339,7 +336,7 @@ export default function NewEmployee() {
                           <InputGroup className='my-3'>
                               <Select classNamePrefix="Select" name='Salut' value={selectedSalut} onChange={setSelectedSault} options={salutOption} placeholder='Salut' />
                               <input className="form-control" id='FirstName' name="FirstName" required type="text" placeholder="Enter first name" 
-                                  onChange={on_submit.handleChange} onBlur={on_submit.handleBlur}
+                                onChange={on_submit.handleChange} onBlur={on_submit.handleBlur}
                               />
                           </InputGroup>
                           {                              

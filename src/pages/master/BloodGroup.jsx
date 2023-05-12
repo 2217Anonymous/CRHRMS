@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PageHeader from '../../layouts/PageHeader/PageHeader'
-import { Badge, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import { Badge, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { ToastContainer } from 'react-toastify'
@@ -29,7 +29,6 @@ export const COLUMNS = [
 ];
 
 export default function Blood() {
-    const navigate = useNavigate()
     const [loading,setLoading] = useState(true)
     const [DATATABLE,setDATATABLE] = useState([])
 
@@ -106,7 +105,7 @@ export default function Blood() {
 
   return (
     <>
-        <PageHeader titles="Blood Grups" active="Blood Group" items={['Pages']} />
+        <PageHeader titles="" active="Blood Group" items={['Pages']} />
         <ToastContainer />
         <Modal show={show} onHide={handleClose}>
             <Modal.Header>
@@ -147,7 +146,7 @@ export default function Blood() {
                     <Card.Header>
                         <Card.Title>Blood Group</Card.Title>
                         {
-                            loading ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Blood Group</button> : <Loader />   
+                            loading ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-outline-success btn-md' onClick={handleShow}><span><i className="fe fe-plus me-2"></i>Add Blood Group</span></button> : <Loader />   
                         }
                     </Card.Header>
                     <Card.Body>

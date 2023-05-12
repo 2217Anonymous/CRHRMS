@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ADD_EXPERINCE, ADD_LANGUAGE, DELETE_EXPERINCE, DELETE_LANGUAGE, DELETE_QUALIFICATION, GET_CANDIDATE_LIST, GET_EDIT_CANDIDATE, GET_EXPERINCE, GET_LANGUAGE, GET_QUALIFICATION, GET_RESUME_MASTER_ID, INSERT_CANDIDATE_URL } from "./ApiUrl"
+import { ADD_EXPERINCE, ADD_LANGUAGE, ADD_QUALIFICATION, DELETE_EXPERINCE, DELETE_LANGUAGE, DELETE_QUALIFICATION, GET_CANDIDATE_LIST, GET_CANDIDATE_QUALIFICATION, GET_EDIT_CANDIDATE, GET_EXPERINCE, GET_LANGUAGE, GET_RESUME_MASTER_ID, INSERT_CANDIDATE_URL } from "./ApiUrl"
 
 const browser = {
     ipAddress:'127.0.0.1',
@@ -116,16 +116,18 @@ export const NEWCANDIDATE = ((dt) => {
     return axios.post(INSERT_CANDIDATE_URL,form)
 })
 
-export const ADDLANGUAGE = (async (id,data) => {
-    const dt = [{id:0,empId:0,language:data.language,readSkill:true,writeSkill:true,speakSkill:true,empParamStr:id,...browser}]
+export const ADDLANGUAGE = (async (data) => {
+    const dt = [{id:0,empId:0,language:data.language,readSkill:data.readSkill,writeSkill:data.writeSkill,speakSkill:data.speakSkill,empParamStr:data.empParamStr,...browser}]
+    console.log(dt);
     return await axios.post(ADD_LANGUAGE,dt)
 })
-export const ADDEXPERIENCE = (async (id,data) => {
-    const dt = [{id:0,empId:0,companyName:data.companyName,designation:data.designation,workFrom:data.workFrom,workTo:data.workTo,yearsOfExperiance:data.yearsOfExperiance,salaryPerMonth:data.salaryPerMonth,empParamStr:id,...browser}]
+export const ADDEXPERIENCE = (async (data) => {
+    const dt = [{id:0,empId:0,companyName:data.companyName,designation:data.designation,workFrom:data.workFrom,workTo:data.workTo,yearsOfExperiance:data.yearsOfExperiance,salaryPerMonth:data.salaryPerMonth,empParamStr:data.empParamStr,...browser}]
     return await axios.post(ADD_EXPERINCE,dt)
 })
-export const ADDQUALIFICATION = (async (id) => {
-    return await axios.post(GET_QUALIFICATION,{id:id,...browser})
+export const ADDQUALIFICATION = (async (data) => {
+    const dt = [{id:0,empId:0,courceId:data.courceId,courseName:data.courseName,medium:data.medium,institution:data.institution,yearOfPassing:parseInt(data.yearOfPassing),gradeOrPercentage:data.gradeOrPercentage,empParamStr:data.empParamStr,...browser}]
+    return await axios.post(ADD_QUALIFICATION,dt)
 })
 
 export const GETLANGUAGE = (async (id) => {
@@ -134,8 +136,8 @@ export const GETLANGUAGE = (async (id) => {
 export const GETEXPERIENCE = (async (id) => {
     return await axios.post(GET_EXPERINCE,{id:id,...browser})
 })
-export const GETQUALIFICATION = (async () => {
-    return await axios.post(GET_QUALIFICATION,{...browser})
+export const GETCANDIDATEQUALIFICATION = (async (id) => {
+    return await axios.post(GET_CANDIDATE_QUALIFICATION,{id:id,...browser})
 })
 
 export const DELETELANGUAGE = (async (id) => {

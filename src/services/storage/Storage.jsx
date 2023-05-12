@@ -40,7 +40,7 @@ export const storePermission = ((data) => {
     secureLocalStorage.setItem('permission',data)
 }) 
 
-export const getPermission= (() => {
+export const getPermission = (() => {
     return secureLocalStorage.getItem('permission')
 }) 
 
