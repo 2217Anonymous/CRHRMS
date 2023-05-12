@@ -14,6 +14,8 @@ import Datatable from '../../components/Helper/Datatable'
 import { isAuthenticated } from '../../services/Auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchQualificationData } from '../../Redux/slice/Master/Qualification'
+import { checkPermission } from '../../services/Permission'
+import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 
 const authToken = getUserData()
 
@@ -121,8 +123,17 @@ export default function Qualification() {
               QUALIFICATION : res.Qualification,
               DESCRIPTION : res.Description,
               STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
-              ACTION      : res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
-              : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+              ACTION      : (<>
+                {
+                  checkPermission('Qualifications_Edit') ? (
+                      <>
+                      {
+                          res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
+                         : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+                      }
+                      </>) : ''
+                }
+                </>)
             }))
             setDATATABLE(tableData)
         }).catch((error) => {
@@ -183,11 +194,13 @@ export default function Qualification() {
                     <Card.Header>
                         <Card.Title>Qualification</Card.Title>
                         {
-                            loading ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Qualification</button> : <Loader />
+                            checkPermission('Qualifications_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Qualification</button> : ''
                         }
                     </Card.Header>
                     <Card.Body>
-                        <Datatable data={DATATABLE} col={COLUMNS} />
+                        {
+                            checkPermission('Qualifications_List') ?<Datatable data={DATATABLE} col={COLUMNS} />:<AuthError/>
+                        }
                     </Card.Body>
                 </Card>
             </Col>

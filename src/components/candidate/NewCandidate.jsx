@@ -9,13 +9,15 @@ import { getComId } from '../../services/storage/Storage';
 import Loader from '../../services/loader/Loader';
 import { GETRESUMEMASTERID, NEWCANDIDATE } from '../../services/api/Hrms';
 import { isAuthenticated } from '../../services/Auth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from '@mui/material';
 import { ToastLeft } from '../../services/notification/Notification';
 import { ToastContainer } from 'react-toastify';
+import { checkPermission } from '../../services/Permission';
+import AuthError from '../authentication/errorPage/AuthError/AuthError';
 
 export default function NewEmployee() {
   const navigate = useNavigate()
@@ -319,9 +321,14 @@ export default function NewEmployee() {
     <Card>
       <Card.Header className='d-sm-flex justify-content-between align-items-center d-block'>
         <Card.Title className='mb-3 mb-sm-0'>New Candidate</Card.Title>
+        {
+          checkPermission('Candidates_List') ? <Link to={'/candidates'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success'>Candidate List</Link> : ''
+        }
       </Card.Header>
       <Card.Body>
-        <div className='panel-group1'>
+      {
+        checkPermission('Candidates_Add') ? (<>
+          <div className='panel-group1'>
           {/* PERSONAL */}
           <div className='mb-4'>
             <Accordion defaultActiveKey="0" className="demo-accordion accordionjs m-0">
@@ -849,7 +856,6 @@ export default function NewEmployee() {
               </Accordion.Item>
             </Accordion>
           </div>
-
           {
             !loading ?  (
               <div className="submit text-end">
@@ -863,8 +869,9 @@ export default function NewEmployee() {
               </div>
             )  : (<Loader />)
           }
-
         </div>
+        </>) : <AuthError />
+      }
       </Card.Body>
     </Card>
     </>

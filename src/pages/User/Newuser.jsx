@@ -12,6 +12,8 @@ import PageHeader from '../../layouts/PageHeader/PageHeader';
 import Loader from '../../services/loader/Loader';
 import { isAuthenticated } from '../../services/Auth';
 import Select from 'react-select';
+import { checkPermission } from '../../services/Permission';
+import AuthError from '../../components/authentication/errorPage/AuthError/AuthError';
 
 export default function NewUser() {
   const authToken = getUserData()
@@ -112,6 +114,8 @@ export default function NewUser() {
     <>
         <PageHeader titles="Users" active="Module" items={['Home']} />
         <Row>
+        {
+          !checkPermission('Users_Add') ? (<>
             <Col xl={4}>
               <Card>
                 <Card.Header>
@@ -183,6 +187,12 @@ export default function NewUser() {
                     </Card.Footer>
                 </Card>
             </Col>
+          </>) : <>
+          <Card>
+            <Card.Body><AuthError /></Card.Body>
+          </Card>
+          </>
+        }
         </Row>
     </>
   )

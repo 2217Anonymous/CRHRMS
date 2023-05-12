@@ -9,6 +9,8 @@ import { ToastLeft } from '../../services/notification/Notification'
 import Loader from '../../services/loader/Loader'
 import { BLOODSTATUS, GETBLOOD, INSERTBLOOD } from '../../services/api/Master'
 import Datatable from '../../components/Helper/Datatable'
+import { checkPermission } from '../../services/Permission'
+import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 
 export const COLUMNS = [
     {
@@ -38,8 +40,17 @@ export default function Blood() {
             const tableData = data.map((res) => ({
               NAME        : res.Name,
               STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
-              ACTION      : res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
-              : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+              ACTION      : (<>
+              {
+                checkPermission('Blood Group_Edit') ? (
+                    <>
+                    {
+                        res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
+                       : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+                    }
+                    </>) : ''
+              }
+              </>)
             }))
             setDATATABLE(tableData)
         }).catch((error) => {
@@ -146,11 +157,15 @@ export default function Blood() {
                     <Card.Header>
                         <Card.Title>Blood Group</Card.Title>
                         {
-                            loading ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-outline-success btn-md' onClick={handleShow}><span><i className="fe fe-plus me-2"></i>Add Blood Group</span></button> : <Loader />   
+                            checkPermission('Blood Group_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-outline-success btn-md' onClick={handleShow}><span><i className="fe fe-plus me-2"></i>Add Blood Group</span></button> : ''
                         }
                     </Card.Header>
                     <Card.Body>
-                        <Datatable data={DATATABLE} col={COLUMNS} />
+                        {
+                            checkPermission('Blood Group_List') ? (<>
+                                <Datatable data={DATATABLE} col={COLUMNS} />
+                            </>) : <AuthError />
+                        }
                     </Card.Body>
                 </Card>
             </Col>

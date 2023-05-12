@@ -9,6 +9,7 @@ import { ToastLeft } from '../../services/notification/Notification';
 import { isAuthenticated } from '../../services/Auth';
 import PageHeader from '../../layouts/PageHeader/PageHeader';
 import Datatable from '../../components/Helper/Datatable';
+import AuthError from '../../components/authentication/errorPage/AuthError/AuthError';
 
 const authToken = getUserData()
 
@@ -105,17 +106,30 @@ export default function Users() {
     <>
         <PageHeader titles="Users" active="Module" items={['Home']} />
         <Card>
+            <Card.Header>
+                <Card.Title as="h3">Users List</Card.Title>
+                    <div style={{float:'right'}} className='d-flex ms-auto mx-2'>
+                        {
+                            checkPermission('Users_List') ? (<>
+                                <div style={{marginRight:'20px'}}>  
+                                     <Link to={'/usercard'} className='btn btn-primary'>User Card</Link>
+                                </div>
+                            </>) : ''
+                        }
+                        {
+                            checkPermission('Users_Add') ? (<>
+                                <div>
+                                    <Link to={'/newuser'} className='btn btn-success'>Add New User <b>+</b></Link>{ }
+                                </div>
+                            </>) : ''
+                        }
+                    </div>   
+            </Card.Header>
             <Card.Body className="pb-0">
-                <div className='d-flex flex-row justify-content-end'>
-                    <div style={{marginRight:'20px'}}>  
-                        <Link to={'/usercard'} className='btn btn-sm btn-primary'>User Card</Link>
-                    </div>
-                    <div>
-                        <Link to={'/newuser'} className='btn btn-sm btn-success'>Add New User <b>+</b></Link>{ }
-                    </div>
-                </div>
-                <br></br>
-                <Datatable data={DATATABLE} col={COLUMNS} />
+                {
+                    checkPermission('Users_List') ? <Datatable data={DATATABLE} col={COLUMNS} /> : <AuthError />
+                }
+                <hr></hr>
             </Card.Body>
         </Card>       
     </>

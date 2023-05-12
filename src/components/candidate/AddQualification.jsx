@@ -258,7 +258,7 @@ export default function AddQualification(props) {
         </Col>
         <br></br>  
         <div className="row">
-            <div className='col-md-12 '>
+            <div className='col-md-12'>
                 <Datatable data={data} col={COLUMNS} />
             </div>
         </div> 

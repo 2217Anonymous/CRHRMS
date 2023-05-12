@@ -17,6 +17,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from '@mui/material';
 import { ToastLeft } from '../../services/notification/Notification';
 import { ToastContainer } from 'react-toastify';
+import { checkPermission } from '../../services/Permission';
+import AuthError from '../authentication/errorPage/AuthError/AuthError';
 
 const authToken = getUserData()
 
@@ -363,8 +365,7 @@ export default function UpdateCandidate(props) {
   }
   return (
     <>
-    <ToastContainer />
-
+        <ToastContainer />
         <div className='panel-group1'>
           {/* PERSONAL */}
           <div className='mb-4'>

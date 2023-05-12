@@ -14,6 +14,7 @@ import Loader from '../../services/loader/Loader'
 import { ToastContainer } from 'react-toastify'
 import Datatable from '../../components/Helper/Datatable'
 import { isAuthenticated } from '../../services/Auth'
+import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 
 
 const authToken = getUserData()
@@ -69,8 +70,17 @@ export default function Gender() {
               DESIGNATION : res.DesignName,
               DESCRIPTION : res.Description,
               STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
-              ACTION      : res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
-              : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+              ACTION      : (<>
+                {
+                  checkPermission('Designations_Edit') ? (
+                      <>
+                      {
+                          res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
+                         : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+                      }
+                      </>) : ''
+                }
+                </>)
             }))
             setDATATABLE(tableData)
         }).catch((error) => {
@@ -211,11 +221,13 @@ export default function Gender() {
                     <Card.Header>
                         <Card.Title>Designation</Card.Title>
                         {
-                            loading ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Designation</button> : <Loader />
+                            checkPermission('Designations_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Designation</button> : ''
                         }
                     </Card.Header>
                     <Card.Body>
-                        <Datatable data={DATATABLE} col={COLUMNS} />
+                    {
+                        checkPermission('Designations_List') ? <Datatable data={DATATABLE} col={COLUMNS} />: <AuthError />
+                    }
                     </Card.Body>
                 </Card>
             </Col>

@@ -7,6 +7,8 @@ import { GETCANDIDATE } from '../../services/api/Hrms'
 import { getUserData } from '../../services/storage/Storage'
 import { ToastLeft } from '../../services/notification/Notification'
 import axios from 'axios'
+import { checkPermission } from '../../services/Permission'
+import AuthError from '../authentication/errorPage/AuthError/AuthError'
 
 const authToken = getUserData()
 
@@ -63,7 +65,9 @@ export default function EmployeeList() {
         BloodGroup  : res.BloodGroup,
         status      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
         action      : (<>
-                          <Link to={`/updatecandidate/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Edit</Tooltip>}><span className="fe fe-edit me-2 text-primary"></span></OverlayTrigger></Link> 
+                        {
+                          checkPermission('Candidates_Edit') ? (<Link to={`/updatecandidate/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Edit</Tooltip>}><span className="fe fe-edit me-2 text-primary"></span></OverlayTrigger></Link> ) : ''
+                        }    
                       </>)
       }))
         setDatatable(tableData)
@@ -86,17 +90,19 @@ export default function EmployeeList() {
 
   return (
     <>
-
       <PageHeader titles="Candidate" active="Hrme" items={['Candidate']} />
       <Card>
+          <Card.Header>
+            <Card.Title as="h3">Candidate List</Card.Title>
+              {
+                checkPermission('Candidates_Add') ? <Link to={'/newcandidate'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success'>Add New Candidate</Link> : ''
+              }
+          </Card.Header>
           <Card.Body className="pb-0">
-              <div className='d-flex flex-row justify-content-end'>
-                  <div>
-                      <Link to={'/newcandidate'} className='btn btn-sm btn-success'>Add New Candidate <b>+</b></Link>{ }
-                  </div>
-              </div>
-              <br />
-              <Datatable data={datatable} col={col} />
+              {
+                checkPermission('Candidates_List') ? <Datatable data={datatable} col={col} /> : <AuthError />
+              }
+              <hr></hr>
           </Card.Body>
       </Card>  
     </>   

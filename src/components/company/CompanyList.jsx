@@ -48,10 +48,10 @@ export const col = [
       className: "text-center wd-15p border-bottom-0 ",
     },
     {
-      Header: "ACTION",
-      accessor: "action",
-      className: "text-center wd-15p border-bottom-0 ",
-    },
+        Header: "ACTION",
+        accessor: "action",
+        className: "text-center wd-15p border-bottom-0 ",
+    }
 ];
 export default function CompanyList() {
     
@@ -133,7 +133,7 @@ export default function CompanyList() {
                     <Card.Header>
                         <Card.Title as="h3">Company List</Card.Title>
                         {
-                            checkPermission('Companies_Add') ? <Link to={'/newcompany'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-sm btn-success'>Add company</Link> : ''
+                            checkPermission('Companies_Add') ? <Link to={'/newcompany'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success'>Add company</Link> : ''
                         }
                     </Card.Header>
                     <Card.Body>

@@ -182,7 +182,10 @@ export default function AddCompany() {
                         }   
                     </Card.Header>
                     <Card.Body>
-                        <div className='row'>
+                    {
+                        checkPermission('Companies_Add') ? (
+                            <>
+                            <div className='row'>
                             <div className='col-md-12'>
                                 <div className="form-group">
                                     <Form.Label htmlFor='company_name'>Company name</Form.Label>
@@ -513,20 +516,24 @@ export default function AddCompany() {
                             </>
                             )
                         }
+                        <hr></hr>
+                            <div className="text-end">
+                                <div className="submit">
+                                    { !loading ? <>
+                                        <Button variant="danger" onClick={on_submit.handleReset}>
+                                            Close
+                                        </Button> { }
+                                        <Button variant="success" onClick={on_submit.handleSubmit}>
+                                            Save Changes
+                                        </Button>
+                                    </> : (<Loader />)
+                                    } 
+                                </div>      
+                            </div>
+                            </>
+                        ) : <AuthError />
+                    }    
                     </Card.Body>
-                    <Card.Footer className="text-end">
-                        <div className="submit">
-                            { !loading ? <>
-                                <Button variant="danger" onClick={on_submit.handleReset}>
-                                    Close
-                                </Button> { }
-                                <Button variant="success" onClick={on_submit.handleSubmit}>
-                                    Save Changes
-                                </Button>
-                            </> : (<Loader />)
-                            } 
-                        </div>      
-                    </Card.Footer>
                 </Card>
             </Col>
         </Row>

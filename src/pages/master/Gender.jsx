@@ -13,6 +13,8 @@ import { ToastLeft } from '../../services/notification/Notification'
 import Loader from '../../services/loader/Loader'
 import Datatable from '../../components/Helper/Datatable'
 import { isAuthenticated } from '../../services/Auth'
+import { checkPermission } from '../../services/Permission'
+import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 
 const authToken = getUserData()
 
@@ -32,7 +34,7 @@ export const COLUMNS = [
       accessor: "ACTION",
       className: "text-center wd-15p border-bottom-0 ",
     },
-  ];
+];
 
 export default function Gender() {
     const navigate = useNavigate()
@@ -45,8 +47,17 @@ export default function Gender() {
             const tableData = data.map((res) => ({
                 GENNAME     : res.GenName,
                 STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
-                ACTION      : res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
-                : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+                ACTION      : (<>
+                    {
+                      checkPermission('Genders_Edit') ? (
+                          <>
+                          {
+                              res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
+                             : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+                          }
+                          </>) : ''
+                    }
+                    </>)
             }))
             setDATATABLE(tableData)
         }).catch((error) => {
@@ -162,11 +173,13 @@ export default function Gender() {
                     <Card.Header>
                         <Card.Title>Gender</Card.Title>
                         {
-                            loading ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Gender</button> : <Loader />
+                            checkPermission('Genders_Edit') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Gender</button> : ''
                         }
                     </Card.Header>
                     <Card.Body>
-                        <Datatable data={DATATABLE} col={COLUMNS} />
+                    {
+                            checkPermission('Genders_List') ? <Datatable data={DATATABLE} col={COLUMNS} /> : <AuthError />
+                    }
                     </Card.Body>
                 </Card>
             </Col>

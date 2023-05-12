@@ -14,6 +14,7 @@ import { checkPermission } from '../../services/Permission'
 import Loader from '../../services/loader/Loader'
 import Datatable from '../../components/Helper/Datatable'
 import { isAuthenticated } from '../../services/Auth'
+import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 
 const authToken = getUserData()
 
@@ -53,8 +54,17 @@ export default function WorkType() {
                 NAME        : res.Name,
                 DESCRIPTION : res.Description,
                 STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
-                ACTION      : res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
-                : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+                ACTION      : (<>
+                    {
+                      checkPermission('Worktype_Edit') ? (
+                          <>
+                          {
+                              res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
+                             : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+                          }
+                          </>) : ''
+                    }
+                    </>)
               }))
             setDATATABLE(tableData)
         }).catch((error) => {
@@ -177,11 +187,13 @@ export default function WorkType() {
                     <Card.Header>
                         <Card.Title>WorkType</Card.Title>
                         {
-                            loading ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Worktype</button> : <Loader />
+                            checkPermission('Worktype_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Worktype</button> : ''
                         }
                     </Card.Header>
                     <Card.Body>
-                        <Datatable data={DATATABLE} col={COLUMNS} />
+                    {
+                        checkPermission('Worktype_List') ? <Datatable data={DATATABLE} col={COLUMNS} /> : <AuthError />
+                    }
                     </Card.Body>
                 </Card>
             </Col>

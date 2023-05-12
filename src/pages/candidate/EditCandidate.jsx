@@ -8,6 +8,8 @@ import UpdateCandidate from '../../components/candidate/UpdateCandidate'
 import AddExperiance from '../../components/candidate/AddExperiance'
 import AddLanguage from '../../components/candidate/AddLanguage'
 import AddQualification from '../../components/candidate/AddQualification'
+import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
+import { checkPermission } from '../../services/Permission'
 
 
 export default function EditCandidate() {
@@ -24,12 +26,18 @@ export default function EditCandidate() {
       <Card>
         <Card.Header className="mb-0 d-flex flex-row justify-content-between">
             <Card.Title as="h3" className="mb-0">Edit Candidate</Card.Title>
-            <div>
-                <Link to={'/candidates'} className='btn btn-sm btn-success'>Back to candidate</Link>{ }
-            </div>
+            {
+              checkPermission('Candidates_List') ? (<>
+              <div>
+                <Link to={'/candidates'} className='btn btn-success'>Candidate List</Link>{ }
+              </div>
+              </>) : ''
+            }
         </Card.Header>
         <Card.Body className="pt-4">
           <Row>
+          {
+            checkPermission('Candidates_Edit') ? (<>
             <Col sm={12}>
               <div className="panel panel-success">
                 <Tab.Container id="left-tabs-example" defaultActiveKey="editCandidate">
@@ -64,6 +72,8 @@ export default function EditCandidate() {
                 </Tab.Container>
               </div>   
             </Col>
+          </>) : <AuthError />
+        }
           </Row> 
         </Card.Body>
       </Card>

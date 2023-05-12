@@ -17,8 +17,7 @@ export default function NewCompany() {
   console.log(getPermission());
   return (
     <>
-
-        <AddCompany />
+      <AddCompany />
     </>
   )
 }
