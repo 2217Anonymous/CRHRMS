@@ -72,7 +72,7 @@ export default function Operationlist() {
         .trim()
         .required("module name is required")
         .min(3,"Minimum 3 Charactors")
-        .max(16,"Maximum 16 Charactors"),
+        .max(50,"Maximum 50 Charactors"),
       }),
       onSubmit:(userInputData) => {
         setLoading(true)

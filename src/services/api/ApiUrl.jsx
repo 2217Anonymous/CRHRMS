@@ -109,3 +109,4 @@ export const STATE_LIST_URL                 = 'utility/getstatesbycountry';
 export const CITY_LIST_URL                  = 'utility/getcitiesbystate';
 
 export const HISTORY_URL                    = 'utility/rowhistory';
+export const APPLICATION_DOWNLOAD_URL       = 'hrms/applicationdownload';

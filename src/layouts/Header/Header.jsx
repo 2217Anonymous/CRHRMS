@@ -165,18 +165,23 @@ const Header = ({ local_varaiable,AddToCart }) => {
     }
     setNavData(allElement2)
   }
+  const refresh = () => window.location.reload(true)
 
   const getCompanyId = (e) => {
     setSelectedComId(e.target.value)
     setComId(e.target.value);
     storeCompanyId(e.target.value)
+    refresh()
   }
+
+
 
   const [comId,setComId] = useState()
   const [selectedComId,setSelectedComId] = useState()
 
   const dispatch = useDispatch()
   const {companyList} = useSelector((state) => state.company);
+
 
   useEffect(() => {
     const authToken = getUserData()

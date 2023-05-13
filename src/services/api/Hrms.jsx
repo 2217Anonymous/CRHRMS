@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ADD_EXPERINCE, ADD_LANGUAGE, ADD_QUALIFICATION, DELETE_EXPERINCE, DELETE_LANGUAGE, DELETE_QUALIFICATION, GET_CANDIDATE_LIST, GET_CANDIDATE_QUALIFICATION, GET_EDIT_CANDIDATE, GET_EXPERINCE, GET_LANGUAGE, GET_RESUME_MASTER_ID, INSERT_CANDIDATE_URL, VIEW_CANDIDATE_URL } from "./ApiUrl"
+import { ADD_EXPERINCE, ADD_LANGUAGE, ADD_QUALIFICATION, APPLICATION_DOWNLOAD_URL, DELETE_EXPERINCE, DELETE_LANGUAGE, DELETE_QUALIFICATION, GET_CANDIDATE_LIST, GET_CANDIDATE_QUALIFICATION, GET_EDIT_CANDIDATE, GET_EXPERINCE, GET_LANGUAGE, GET_RESUME_MASTER_ID, INSERT_CANDIDATE_URL, VIEW_CANDIDATE_URL } from "./ApiUrl"
 
 const browser = {
     ipAddress:'127.0.0.1',
@@ -10,8 +10,8 @@ export const GETRESUMEMASTERID = (async() => {
     return await axios.post(GET_RESUME_MASTER_ID)
 })
 
-export const GETCANDIDATE = (async() => {
-    return await axios.post(GET_CANDIDATE_LIST)
+export const GETCANDIDATE = (async(id) => {
+    return await axios.post(GET_CANDIDATE_LIST,{id:id,...browser})
 })
 
 export const GETEDITCANDIDATE = (async (id) => {
@@ -152,4 +152,16 @@ export const DELETEEXPERIENCE = (async (id) => {
 export const DELETEQUALIFICATION = (async (id) => {
     return await axios.post(DELETE_QUALIFICATION,{id:id,...browser})
 })
+
+export const APPLICATION = (async (id) => {
+    return await axios.post(APPLICATION_DOWNLOAD_URL,{id:id,...browser},{
+        responseType: 'arraybuffer',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': '/'
+        }
+    })
+})
+
+
        

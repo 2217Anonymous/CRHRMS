@@ -4,7 +4,7 @@ import { Badge, Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Datatable from '../Helper/Datatable'
 import { GETCANDIDATE } from '../../services/api/Hrms'
-import { getUserData, setHistory } from '../../services/storage/Storage'
+import { getComId, getUserData, setHistory } from '../../services/storage/Storage'
 import { ToastLeft } from '../../services/notification/Notification'
 import axios from 'axios'
 import { checkPermission } from '../../services/Permission'
@@ -51,11 +51,13 @@ export const col = [
 ];
 
 export default function EmployeeList() {
-  const [datatable,setDatatable] = useState([])
-  const [loading,setLoading] = useState(false)
+  const [datatable,setDatatable]  = useState([])
+  const [loading,setLoading]      = useState(false)
+
+  const compId = getComId()
 
   const getEmployee = () => {
-    GETCANDIDATE().then((res) => {
+    GETCANDIDATE(compId).then((res) => {
       const data = res.data.Data
       const tableData = data.map((res) => ({
         Name        : res.FirstName,

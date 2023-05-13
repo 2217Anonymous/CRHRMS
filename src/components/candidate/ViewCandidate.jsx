@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, Badge, Card, Col, ListGroup, ListGroupItem, Nav, Row, Tab, Table, Toast } from 'react-bootstrap'
+import { Accordion, Badge, Card, Col, Nav, Row, Tab } from 'react-bootstrap'
 import { VIEWCANDIDATE } from '../../services/api/Hrms'
 import Datatable from '../Helper/Datatable'
+import CandidateDocument from './CandidateDocument';
 
 export default function ViewCandidate(props) {
     const Language_Col = [
@@ -95,10 +96,12 @@ export default function ViewCandidate(props) {
     const [Lang,setLang]    = useState([])
     const [Exp,setExp]      = useState([])
     const [Qual,setQual]    = useState([])
+    const [Document,setDocument]    = useState([])
 
     const getEditCanditate = () => {
         VIEWCANDIDATE(props.id).then(res => {
             setData(res.data.Data)
+            setDocument(res.data.Documents)
             const Lang_dt = res.data.Languages
             const LangData = Lang_dt.map((res) => ({
                 LANGUAGE    : res.Language,
@@ -156,6 +159,9 @@ export default function ViewCandidate(props) {
                     </Nav.Item>
                     <Nav.Item>
                       <Nav.Link eventKey="qualification"><i className="fe fe-settings me-1"></i>Qualification</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="document"><i className="fe fe-settings me-1"></i>Document</Nav.Link>
                     </Nav.Item>
                   </Nav>
                   <Tab.Content>
@@ -275,6 +281,9 @@ export default function ViewCandidate(props) {
                     </Tab.Pane>
                     <Tab.Pane eventKey="qualification">
                         <Datatable data={Qual} col={Qualification_Col} />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="document">
+                        <CandidateDocument data={Document} id={props.id}/>
                     </Tab.Pane>
                   </Tab.Content>
                 </Tab.Container>

@@ -10,6 +10,7 @@ import AddLanguage from '../../components/candidate/AddLanguage'
 import AddQualification from '../../components/candidate/AddQualification'
 import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 import { checkPermission } from '../../services/Permission'
+import CandidateDocument from '../../components/candidate/CandidateDocument'
 
 
 export default function EditCandidate() {
@@ -54,6 +55,9 @@ export default function EditCandidate() {
                     <Nav.Item>
                       <Nav.Link eventKey="qualification"><i className="fe fe-settings me-1"></i>Qualification</Nav.Link>
                     </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="document"><i className="fe fe-settings me-1"></i>Documents</Nav.Link>
+                    </Nav.Item>
                   </Nav>
                   <Tab.Content>
                     <Tab.Pane eventKey="editCandidate">
@@ -67,6 +71,9 @@ export default function EditCandidate() {
                     </Tab.Pane>
                     <Tab.Pane eventKey="qualification">
                       <AddQualification id={Param}/>
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="document">
+                      <CandidateDocument data={[]} id={Param}/>
                     </Tab.Pane>
                   </Tab.Content>
                 </Tab.Container>
