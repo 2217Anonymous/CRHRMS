@@ -178,8 +178,6 @@ const Header = ({ local_varaiable,AddToCart }) => {
   const dispatch = useDispatch()
   const {companyList} = useSelector((state) => state.company);
 
-  console.log(companyList);
-
   useEffect(() => {
     const authToken = getUserData()
     axios.interceptors.request.use(
@@ -336,8 +334,7 @@ const Header = ({ local_varaiable,AddToCart }) => {
 
                     <Dropdown className="d-flex profile-img-1">
                       <Dropdown.Toggle variant='' className="nav-link leading-none d-flex no-caret">
-                        <img src={require("../../assets/images/users/avatar.png")} alt="profile-user"
-                          className="rounded-circle thumb-sm" style={{maxWidth:'50px'}} />
+                        <img className="avatar avatar-lg brround cover-image" alt='user18' src={require("../../assets/images/users/22.jpg")} />
                       </Dropdown.Toggle>
                       <Dropdown.Menu className="dropdown-menu-end dropdown-menu-arrow">
                         <div className="drop-heading">

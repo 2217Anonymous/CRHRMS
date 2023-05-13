@@ -128,33 +128,33 @@ export default function EditUser() {
                       <Tab.Content>
                         <Tab.Pane eventKey="editUser">
                           <Row>
-                            <Col xl={4}>
-                              <Card>
-                                <Card.Body>
-                                  <div className="text-center chat-image mb-5">
-                                      <div className="avatar avatar-xxl chat-profile mb-3 brround">
-                                        <div onClick={handleImageClick}>
-                                            {
-                                                image ? (<img className="brround rounded-circle cover-image" style={{maxWidth:'100%'}} alt='user12' src={URL.createObjectURL(image)} />) 
-                                                : (<img className="brround rounded-circle cover-image" style={{maxWidth:'100%'}} alt='user12' src={require("../../assets/images/users/avatar.png")} />)
-                                            }  
-                                            <input type = "file" ref={profileRef} onChange={handleImageChange} style={{display:'none'}}/>
-                                        </div>
-                                      </div>
-                                      {
-                                        checkPermission("Users_Edit") ? (
-                                          <div className="submit">
-                                            <Link className="btn btn-success btn-sm">Upload</Link>
-                                          </div>
-                                        ) : (
-                                          <div className="submit">
-                                            <Link className="btn btn-success btn-sm disabled">Upload</Link>
-                                          </div>
-                                        )
-                                      }          
+                            <Col xl={3}>
+                              <div className="text-center chat-image mt-6">
+                              {/* <div className="avatar avatar-xl brround cover-image bg-transparent" >
+                                <img className=" brround cover-image" alt='user6' src={require("../../assets/images/users/22.jpg")} />
+                                <span className="badge rounded-pill avatar-icons bg-green"><i className="fe fe-camera fs-12"></i></span>
+                              </div> */}
+                                  <div className="avatar avatar-xxl chat-profile mb-3 brround">
+                                    <div onClick={handleImageClick}>
+                                        {
+                                            image ? (<img className="avatar avatar-xxl brround cover-image" alt='user18' src={URL.createObjectURL(image)} />) 
+                                            : (<img className="avatar avatar-xxl brround cover-image" alt='user18' src={require("../../assets/images/users/22.jpg")} />)
+                                        }  
+                                        <input type="file" ref={profileRef} onChange={handleImageChange} style={{display:'none'}}/>
+                                    </div>
                                   </div>
-                                </Card.Body>
-                              </Card>
+                                  {
+                                    checkPermission("Users_Edit") ? (
+                                      <div className="submit">
+                                        <Link className="btn btn-success btn-sm">Upload</Link>
+                                      </div>
+                                    ) : (
+                                      <div className="submit">
+                                        <Link className="btn btn-success btn-sm disabled">Upload</Link>
+                                      </div>
+                                    )
+                                  }          
+                              </div>
                             </Col>
                             <Col xl={8}>
                                 <ToastContainer />

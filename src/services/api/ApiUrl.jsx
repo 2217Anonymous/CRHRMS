@@ -49,6 +49,7 @@ export const DELETE_EXPERINCE               = "hrms/deleteexperience";
 export const ADD_QUALIFICATION              = "hrms/addcandidatequalification";
 export const GET_CANDIDATE_QUALIFICATION    = "hrms/qualificationlist";
 export const DELETE_QUALIFICATION           = "hrms/deletequalification";
+export const VIEW_CANDIDATE_URL             = "hrms/viewgandidate"; 
 
 export const EMPLOYEE_JOIN_ENTRY            = "hrms/empjoiningentry";
 
@@ -106,3 +107,5 @@ export const SUBMODULES_BY_MODULES_URL      = 'utility/submodulesbymoduleid';
 export const COUNTRY_LIST_URL               = 'utility/getcountries';
 export const STATE_LIST_URL                 = 'utility/getstatesbycountry';
 export const CITY_LIST_URL                  = 'utility/getcitiesbystate';
+
+export const HISTORY_URL                    = 'utility/rowhistory';

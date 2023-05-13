@@ -44,6 +44,15 @@ export const getPermission = (() => {
     return secureLocalStorage.getItem('permission')
 }) 
 
+export const setHistory = ((data) => {
+    secureLocalStorage.removeItem('historyId')
+    secureLocalStorage.setItem('historyId',data)
+}) 
+
+export const getHistory = (() => {
+    return secureLocalStorage.getItem('historyId')
+}) 
+
 export const storeCompanyId = ((data) => {
     secureLocalStorage.removeItem('CompanyId')
     secureLocalStorage.setItem('CompanyId',data)

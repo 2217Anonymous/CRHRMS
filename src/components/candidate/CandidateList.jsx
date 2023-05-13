@@ -4,7 +4,7 @@ import { Badge, Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Datatable from '../Helper/Datatable'
 import { GETCANDIDATE } from '../../services/api/Hrms'
-import { getUserData } from '../../services/storage/Storage'
+import { getUserData, setHistory } from '../../services/storage/Storage'
 import { ToastLeft } from '../../services/notification/Notification'
 import axios from 'axios'
 import { checkPermission } from '../../services/Permission'
@@ -66,7 +66,12 @@ export default function EmployeeList() {
         status      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
         action      : (<>
                         {
-                          checkPermission('Candidates_Edit') ? (<Link to={`/updatecandidate/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Edit</Tooltip>}><span className="fe fe-edit me-2 text-primary"></span></OverlayTrigger></Link> ) : ''
+                          checkPermission('Candidates_Edit') ? (<>
+                            <Link to={`/updatecandidate/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Edit</Tooltip>}><span className="fe fe-edit me-2 text-primary"></span></OverlayTrigger></Link>
+                            {
+                              checkPermission('Candidates_View') ? <Link to={`/JoiningEntry/${res.ParamStr}`} onClick={() => {setHistory(res.Id)}} ><OverlayTrigger placement="top" overlay={<Tooltip >View</Tooltip>}><span className="fe fe-eye me-2 text-info"></span></OverlayTrigger></Link> : ''
+                            }
+                           </>) : ''
                         }    
                       </>)
       }))

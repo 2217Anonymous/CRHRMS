@@ -38,6 +38,7 @@ const SmtpList       = lazy(() => import('./components/company/SmtpList'));
 const Candidate       = lazy(() => import('./components/candidate/CandidateList'));
 const NewCandidate    = lazy(() => import('./components/candidate/NewCandidate'));
 const UpdateCandidate = lazy(() => import('./pages/candidate/EditCandidate'));
+const JoiningEntry    = lazy(() => import('./pages/candidate/JoinEntry'));
 
 //MASTER
 const Gender          = lazy(() => import('./pages/master/Gender'));
@@ -84,6 +85,7 @@ root.render(
                   <Route>
                     <Route path={'/candidates'} element={<Candidate />}></Route>
                     <Route path={'/newcandidate'} element={<NewCandidate />}></Route>
+                    <Route path={'/JoiningEntry/:Param'} element={<JoiningEntry />}></Route>
                     <Route path={'/updatecandidate/:Param'} element={<UpdateCandidate />}></Route>
                   </Route>
 
