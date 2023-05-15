@@ -283,7 +283,7 @@ export default function ViewCandidate(props) {
                         <Datatable data={Qual} col={Qualification_Col} />
                     </Tab.Pane>
                     <Tab.Pane eventKey="document">
-                        <CandidateDocument data={Document} id={props.id}/>
+                        <CandidateDocument data={Document} id={props.id} emp={data.FirstName}/>
                     </Tab.Pane>
                   </Tab.Content>
                 </Tab.Container>

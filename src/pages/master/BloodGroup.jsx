@@ -93,8 +93,9 @@ export default function Blood() {
           .required("Blood Group is required")
         }),
         onSubmit:(userInputData) => {
-          setLoading(true)
+            setLoading(true);
             INSERTBLOOD(userInputData).then((res) => {
+                console.log(res.data);
                 handleClose()
                 getBloodList()
                 const type = res.data.result

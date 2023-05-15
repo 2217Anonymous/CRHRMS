@@ -11,6 +11,7 @@ import AddQualification from '../../components/candidate/AddQualification'
 import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 import { checkPermission } from '../../services/Permission'
 import CandidateDocument from '../../components/candidate/CandidateDocument'
+import AddDocument from '../../components/candidate/AddDocument'
 
 
 export default function EditCandidate() {
@@ -73,7 +74,7 @@ export default function EditCandidate() {
                       <AddQualification id={Param}/>
                     </Tab.Pane>
                     <Tab.Pane eventKey="document">
-                      <CandidateDocument data={[]} id={Param}/>
+                      <AddDocument id={Param}/>
                     </Tab.Pane>
                   </Tab.Content>
                 </Tab.Container>

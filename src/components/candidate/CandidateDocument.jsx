@@ -2,19 +2,29 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { checkPermission } from '../../services/Permission'
 import { APPLICATION } from '../../services/api/Hrms'
+import { ToastLeft } from '../../services/notification/Notification'
 
 export default function CandidateDocument(props) {
     const prop = props.data
     const empId = props.id
+    const empname=props.emp
 
     const application = (() => {
         APPLICATION(empId).then(res => {
-
+            let filename="Job Application of "+ empname+".pfd";
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.setAttribute('download', `job application of ${empname}.pdf`); //or any other extension
+            document.body.appendChild(link);
+            link.click();
         }).catch(err => {
-            console.log(err);
+            ToastLeft(err.message,"Failed");
         })
     })
 
+    // /api/hrms/applicationdownload
   return (
     <>
         <div className="media mb-5 mt-0">
@@ -35,7 +45,7 @@ export default function CandidateDocument(props) {
             }
         </div>
         {
-            prop && prop.map(dt => (
+            prop.map(dt => (
                 <>
                 <div className="media mb-5 mt-0">
                     <div className="d-flex me-3">

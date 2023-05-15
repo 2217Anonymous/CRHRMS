@@ -356,10 +356,6 @@ export default function UpdateCandidate(props) {
       getMasterId()
   },[])
 
-  useEffect(() => {
-
-  },[])
-
   if(!isAuthenticated()){
     navigate('/')
   }

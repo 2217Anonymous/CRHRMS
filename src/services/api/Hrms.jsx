@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ADD_EXPERINCE, ADD_LANGUAGE, ADD_QUALIFICATION, APPLICATION_DOWNLOAD_URL, DELETE_EXPERINCE, DELETE_LANGUAGE, DELETE_QUALIFICATION, GET_CANDIDATE_LIST, GET_CANDIDATE_QUALIFICATION, GET_EDIT_CANDIDATE, GET_EXPERINCE, GET_LANGUAGE, GET_RESUME_MASTER_ID, INSERT_CANDIDATE_URL, VIEW_CANDIDATE_URL } from "./ApiUrl"
+import { ADD_EXPERINCE, ADD_LANGUAGE, ADD_QUALIFICATION, APPLICATION_DOWNLOAD_URL, DELETE_EXPERINCE, DELETE_LANGUAGE, DELETE_QUALIFICATION, EMPLOYEE_JOIN_ENTRY, GET_CANDIDATE_LIST, GET_CANDIDATE_QUALIFICATION, GET_DOCUMENT_LIST, GET_EDIT_CANDIDATE, GET_EXPERINCE, GET_LANGUAGE, GET_RESUME_MASTER_ID, INSERT_CANDIDATE_URL, UPLOAD_DOCUMENT_URL, VIEW_CANDIDATE_URL } from "./ApiUrl"
 
 const browser = {
     ipAddress:'127.0.0.1',
@@ -57,62 +57,7 @@ export const NEWCANDIDATE = ((dt) => {
     form.append("ExpectedSal"             , dt.ExpectedSal)
     form.append("ipAddress"               ,'127.0.0.1')
     form.append("geoLocation"              ,'tiruppur')
-    // const data = {
-    //     CompId                  : 13,
-    //     Salut                   : "1",
-    //     Master_Id               : 1,
-    //     //PERSONAL
-    //     FirstName               : dt.FirstName,
-    //     MiddleName              : dt.MiddleName,
-    //     LastName                : dt.LastName,
-    //     PersonalEmail           : dt.PersonalEmail,
-    //     Mob                     : dt.Mob,
-    //     Mob1                    : dt.Mob1,
-    //     Gender                  : dt.Gender,
-    //     DateOfBirth             : dt.DateOfBirth,
-    //     Age                     : dt.Age,
-    //     BloodGroup              : dt.BloodGroup,
-    //     //FAMILY
-    //     FatherName              : dt.FatherName,
-    //     FatherOccupation        : dt.FatherOccupation,
-    //     MotherName              : dt.MotherName,
-    //     MotherOccupation        : dt.MotherOccupation,
-    //     MaritalStatus           : dt.MaritalStatus,
-    //     HusbandorWifeName       : dt.HusbandorWifeName,
-    //     HusbandorWifeOccupation : dt.HusbandorWifeOccupation,
-    //     NoOfChildrens           : dt.NoOfChildrens,
-    //     //ADDRESS
-    //     PermenentAddress        : dt.PermenentAddress,
-    //     PresentAddress          : dt.PresentAddress,
-    //     //KYC
-    //     AadharNumber            : dt.AadharNumber,
-    //     PanNumber               : dt.PanNumber,
-    //     PassportNumber          : dt.PassportNumber,
-    //     IsVehicleHave           : dt.IsVehicleHave,
-    //     IsLicenseHave           : dt.IsLicenseHave,
-    //     LicenceType             : "1",
-    //     LicenceNumber           : dt.LicenceNumber,
-    //     FileURI                 : dt.FileURI,
-    //     //ADDITIONAL
-    //     ReadyToRelocate         : dt.ReadyToRelocate,
-    //     SpecialSkills           : dt.SpecialSkills,
-    //     Remarks                 : dt.Remarks,
-    //     ExpectedSal             : dt.ExpectedSal,
-    //     ...browser
-    // }
-
-    // console.log(dt);
-    // let formData = new FormData(data)
-    // console.log('form',formData);
-
-    // const formData = new FormData()
-
-    // Object.keys(this.data).forEach((key) => {
-    //     formData.append(key, this.data[key])
-    // })
-
-    // console.log(formData);
-
+    
     return axios.post(INSERT_CANDIDATE_URL,form)
 })
 
@@ -153,6 +98,20 @@ export const DELETEQUALIFICATION = (async (id) => {
     return await axios.post(DELETE_QUALIFICATION,{id:id,...browser})
 })
 
+export const UPLOADDOCUMENT = (async (dt) => {
+    const form=new FormData();
+    form.append("EmpParamStr", dt.EmpParamStr)
+    form.append("Master_Id", dt.Master_Id)
+    form.append("FileURI", dt.FileURI)
+    form.append("Document_Type_Name", dt.Document_Type_Name)
+    form.append("ipAddress" ,'127.0.0.1')
+    form.append("geoLocation",'tiruppur')
+    return await axios.post(UPLOAD_DOCUMENT_URL,form)
+})
+export const GETDOCUMENT = (async (id) => {
+    return await axios.post(GET_DOCUMENT_LIST,{id:id,...browser})
+})
+
 export const APPLICATION = (async (id) => {
     return await axios.post(APPLICATION_DOWNLOAD_URL,{id:id,...browser},{
         responseType: 'arraybuffer',
@@ -161,6 +120,12 @@ export const APPLICATION = (async (id) => {
             'Accept': '/'
         }
     })
+})
+
+export const JOINENTRY = (async (data) => {
+    console.log(data);
+    const dt = {workEmail:data.workEmail,leaveCredits:data.leaveCredits,salary:data.salary,loginUrl:data.loginUrl,deptId:data.deptId,desigId:data.desigId,dateOfJoining:data.dateOfJoining,workType:data.workType,branchId:data.branchId,...browser}
+    return await axios.post(EMPLOYEE_JOIN_ENTRY,dt)
 })
 
 

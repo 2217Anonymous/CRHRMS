@@ -141,8 +141,8 @@ export default function Document() {
     },[])
 
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleClose = ()  => setShow(false);
+    const handleShow = ()   => setShow(true);
 
     if(!isAuthenticated()){
         navigate('/')

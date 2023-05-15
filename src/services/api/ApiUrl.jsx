@@ -52,6 +52,9 @@ export const DELETE_QUALIFICATION           = "hrms/deletequalification";
 export const VIEW_CANDIDATE_URL             = "hrms/viewgandidate"; 
 
 export const EMPLOYEE_JOIN_ENTRY            = "hrms/empjoiningentry";
+export const APPLICATION_DOWNLOAD_URL       = 'hrms/applicationdownload';
+export const GET_DOCUMENT_LIST              = 'hrms/getdocslist';
+export const UPLOAD_DOCUMENT_URL            = 'hrms/empdocumentupload';
 
 //GET MASTER    
 export const GET_BLOOD_URL                  = "masters/bloodgroups";
@@ -109,4 +112,3 @@ export const STATE_LIST_URL                 = 'utility/getstatesbycountry';
 export const CITY_LIST_URL                  = 'utility/getcitiesbystate';
 
 export const HISTORY_URL                    = 'utility/rowhistory';
-export const APPLICATION_DOWNLOAD_URL       = 'hrms/applicationdownload';

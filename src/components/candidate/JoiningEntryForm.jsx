@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card,Form, InputGroup } from 'react-bootstrap'
+import { Button, Card,Form, InputGroup } from 'react-bootstrap'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Loader from '../../services/loader/Loader';
@@ -31,13 +31,8 @@ export default function JoiningEntryForm() {
     const [selectedDept,setSelectedDept] = useState()
     const getDepartment = (() => {
       GETDEPARTMENTS().then((res) => {
-        const data = res.data.Data
-        const drobValue = data.filter(dt => dt.IsActive === true).map((res) => ({
-            value : res.Id,
-            label : res.DeptName
-        }))
-        setDept(drobValue)
-    })
+        setDept(res.data.Data)
+      })
     })
     //HANDLE DEPARTMENT CHANGE
     const handleDepartmentChange = (event) => {
@@ -50,12 +45,7 @@ export default function JoiningEntryForm() {
     const [selectedDesg,setSelectedDesg] = useState()
     const getDesignation = (() => {
       GETDESIGNATION().then((res) => {
-        const data = res.data.Data
-        const drobValue = data.filter(dt => dt.IsActive === true).map((res) => ({
-            value : res.Id,
-            label : res.DesignName
-        }))
-        setDesg(drobValue)
+        setDesg(res.data.Data)
     })
     })
     //HANDLE DESIGNATION CHANGE
@@ -68,12 +58,7 @@ export default function JoiningEntryForm() {
     const [selectedWork,setSelectedWork] = useState()
     const getWorkType = (() => {
       GETWORKTYPE().then((res) => {
-        const data = res.data.Data
-        const drobValue = data.filter(dt => dt.IsActive === true).map((res) => ({
-            value : res.Id,
-            label : res.GenName
-        }))
-        setWork(drobValue)
+        setWork(res.data.Data)
     })
     })
     //HANDLE WORKTYPE CHANGE
@@ -86,12 +71,7 @@ export default function JoiningEntryForm() {
     const [selectedBranch,setSelectedBranch] = useState()
     const getBranch = (() => {
       GETBRANCHES().then((res) => {
-        const data = res.data.Data
-        const drobValue = data.filter(dt => dt.IsActive === true).map((res) => ({
-            value : res.Id,
-            label : res.GenName
-        }))
-        setBranch(drobValue)
+        setBranch(res.data.Data)
     })
     })
     //HANDLE WORKTYPE CHANGE
@@ -107,12 +87,13 @@ export default function JoiningEntryForm() {
       workEmail     : '',
       leaveCredits  : '',
       salary        : '',
-      loginUrl      : '',
     }
   
     //Validation
     const validationSchema = Yup.object({
-      FirstName               : Yup.string().required("Please enter required fields"),
+      workEmail     : Yup.string().required("Please enter required fields"),
+      leaveCredits  : Yup.string().required("Please enter required fields"),
+      salary        : Yup.string().required("Please enter required fields"),
     })
   
     //Submit Data
@@ -120,15 +101,21 @@ export default function JoiningEntryForm() {
       let errors    = initialStateErrors
       let hasError  = false
   
-      //const dob = Datevalue.$y + "/" + parseInt(Datevalue.$M + 1) + "/" + Datevalue.$D
+      const doj = Datevalue.$y + "/" + parseInt(Datevalue.$M + 1) + "/" + Datevalue.$D
+      console.log(selectedDesg);
+      console.log(selectedDept);
+      console.log(selectedWork);
+      console.log(selectedBranch);
+      console.log(doj);
       const additional = {
-        deptId        : '',
-        desigId       : '',
-        dateOfJoining : '',
-        workType      : '',
-        branchId      : '',
+        deptId        : selectedDept.value,
+        desigId       : selectedDesg.value,
+        dateOfJoining : setDatevalue,
+        workType      : selectedWork.value,
+        branchId      : selectedBranch.value,
       }
       const data = {...values,...additional}
+      console.log('data = ',data);
   
       // if(selectedGender.value === "" || null || undefined ){
       //   errors.Gender.required = true
@@ -157,6 +144,7 @@ export default function JoiningEntryForm() {
     if(!isAuthenticated()){
       navigate('/')
     }
+
   return (
     <>
       <Card>
@@ -164,7 +152,6 @@ export default function JoiningEntryForm() {
             <Card.Title as="h3">Join Entry</Card.Title>
           </Card.Header>
         <Card.Body>
-          <form onSubmit={on_submit.handleSubmit}>
             <div className="form-group">
               <Form.Label>Work Email</Form.Label>
               <input type="text" name="workEmail" required placeholder="Enter work email..." className="form-control mb-2"
@@ -186,7 +173,7 @@ export default function JoiningEntryForm() {
                       dept.map((dt) => {
                           return(
                               <option key={dt.Id} value={dt.Id}>
-                                  {dt.Name}
+                                  {dt.DeptName}
                               </option>
                           )
                       })
@@ -207,7 +194,7 @@ export default function JoiningEntryForm() {
                       desg.map((dt) => {
                           return(
                               <option key={dt.Id} value={dt.Id}>
-                                  {dt.Name}
+                                  {dt.DesignName}
                               </option>
                           )
                       })
@@ -296,7 +283,20 @@ export default function JoiningEntryForm() {
                     ): null
                 }
             </div>
-          </form>
+            <hr />
+            {
+            !loading ?  (
+              <div className="submit text-end">
+                  <button className='btn btn-md btn-danger' onClick={on_submit.handleReset}>
+                      Close
+                  </button> {  }
+
+                  <Button variant="success" onClick={on_submit.handleSubmit}>
+                    Save Changes
+                  </Button>
+              </div>
+            )  : (<Loader />)
+          }
         </Card.Body>
       </Card>
     </>
