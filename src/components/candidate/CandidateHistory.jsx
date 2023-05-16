@@ -20,7 +20,6 @@ export default function CandidateHistory(props) {
     const [historyData,setHistoryData] = useState([])
     const historyList = (() => {
         getHistoryList(historyId,'TblEmployee').then(res => {
-            console.log(res.data.Data);
             setHistoryData(res.data.Data)
         }).catch(err => {
 

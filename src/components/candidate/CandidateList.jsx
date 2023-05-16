@@ -10,8 +10,6 @@ import axios from 'axios'
 import { checkPermission } from '../../services/Permission'
 import AuthError from '../authentication/errorPage/AuthError/AuthError'
 
-const authToken = getUserData()
-
 export const col = [
   {
     Header: "NAME",
@@ -52,48 +50,38 @@ export const col = [
 
 export default function EmployeeList() {
   const [datatable,setDatatable]  = useState([])
-  const [loading,setLoading]      = useState(false)
-
-  const compId = getComId()
-
-  const getEmployee = () => {
-    GETCANDIDATE(compId).then((res) => {
-      const data = res.data.Data
-      const tableData = data.map((res) => ({
-        Name        : res.FirstName,
-        Gender      : res.Gender,
-        DateOfBirth : res.DateOfBirth.slice(0,10),
-        Age         : res.Age,
-        BloodGroup  : res.BloodGroup,
-        status      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
-        action      : (<>
-                        {
-                          checkPermission('Candidates_Edit') ? (<>
-                            <Link to={`/updatecandidate/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Edit</Tooltip>}><span className="fe fe-edit me-2 text-primary"></span></OverlayTrigger></Link>
-                            {
-                              checkPermission('Candidates_View') ? <Link to={`/JoiningEntry/${res.ParamStr}`} onClick={() => {setHistory(res.Id)}} ><OverlayTrigger placement="top" overlay={<Tooltip >View</Tooltip>}><span className="fe fe-eye me-2 text-info"></span></OverlayTrigger></Link> : ''
-                            }
-                           </>) : ''
-                        }    
-                      </>)
-      }))
-        setDatatable(tableData)
-      }).catch((error) => {
-        ToastLeft(error.message,"Failed");
-    })
-  }
+  const [companyId,setCompanyId]  = useState(getComId())
 
   useEffect(() => {
-    axios.interceptors.request.use(
-      config => {
-          config.headers.authorization = `Bearer ${authToken}`;
-          return config;
-      },
-      error => {
-          return Promise.reject(error);
-  })
+    setCompanyId(getComId())
+    const getEmployee = () => {
+      GETCANDIDATE(companyId).then((res) => {
+        const data = res.data.Data
+        const tableData = data.map((res) => ({
+          Name        : res.FirstName,
+          Gender      : res.Gender,
+          DateOfBirth : res.DateOfBirth.slice(0,10),
+          Age         : res.Age,
+          BloodGroup  : res.BloodGroup,
+          status      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
+          action      : (<>
+                          {
+                            checkPermission('Candidates_Edit') ? (<>
+                              <Link to={`/updatecandidate/${res.ParamStr}`} ><OverlayTrigger placement="top" overlay={<Tooltip >Edit</Tooltip>}><span className="fe fe-edit me-2 text-primary"></span></OverlayTrigger></Link>
+                              {
+                                checkPermission('Candidates_View') ? <Link to={`/JoiningEntry/${res.ParamStr}`} onClick={() => {setHistory(res.Id)}} ><OverlayTrigger placement="top" overlay={<Tooltip >View</Tooltip>}><span className="fe fe-eye me-2 text-info"></span></OverlayTrigger></Link> : ''
+                              }
+                             </>) : ''
+                          }    
+                        </>)
+        }))
+          setDatatable(tableData)
+        }).catch((error) => {
+          ToastLeft(error.message,"Failed");
+      })
+    }
     getEmployee()
-  },[])
+  },[companyId])
 
   return (
     <>

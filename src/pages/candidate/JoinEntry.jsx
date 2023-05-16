@@ -8,7 +8,6 @@ import CandidateHistory from '../../components/candidate/CandidateHistory'
 
 export default function JoinEntry() {
     const {Param} = useParams()
-    console.log(Param);
   return (
     <>
     <PageHeader titles="Join Entry" active="Candidate" items={['JoinEntry']} />

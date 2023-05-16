@@ -4,15 +4,19 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Loader from '../../services/loader/Loader';
 import { ToastLeft } from '../../services/notification/Notification';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import DatePicker from 'react-multi-date-picker';
 import { TextField } from '@mui/material';
 import { isAuthenticated } from '../../services/Auth';
 import { useNavigate } from 'react-router-dom';
 import { GETBRANCHES, GETDEPARTMENTS, GETDESIGNATION, GETWORKTYPE } from '../../services/api/Master';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { enGB } from 'date-fns/locale';
+import { format } from 'date-fns';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { JOINENTRY } from '../../services/api/Hrms';
 
-export default function JoiningEntryForm() {
+
+export default function JoiningEntryForm(props) {
   const navigate = useNavigate()
 
     const [loading,setLoading] = useState(false)
@@ -80,13 +84,14 @@ export default function JoiningEntryForm() {
     }
 
     //Date picker
-    const [Datevalue, setDatevalue] = useState(null);
+    const [doj, setDoj] = useState(null);
 
     //Initial values
     const initialValues = {
       workEmail     : '',
       leaveCredits  : '',
       salary        : '',
+      loginUrl      : '',
     }
   
     //Validation
@@ -96,33 +101,68 @@ export default function JoiningEntryForm() {
       salary        : Yup.string().required("Please enter required fields"),
     })
   
+    const handleReset = (() => {
+      on_submit.resetForm()
+      setDoj(null)
+      selectedDept(null)
+      selectedDesg(null)
+      selectedWork(null)
+      selectedBranch(null)
+    })
+
     //Submit Data
     const onSubmit = values => {
-      let errors    = initialStateErrors
-      let hasError  = false
-  
-      const doj = Datevalue.$y + "/" + parseInt(Datevalue.$M + 1) + "/" + Datevalue.$D
-      console.log(selectedDesg);
-      console.log(selectedDept);
-      console.log(selectedWork);
-      console.log(selectedBranch);
-      console.log(doj);
+      let errors   = initialStateErrors
+      let hasError = false
+      const Doj  = doj ? format(doj, 'yyyy-MM-dd') : '';
+
       const additional = {
-        deptId        : selectedDept.value,
-        desigId       : selectedDesg.value,
-        dateOfJoining : setDatevalue,
-        workType      : selectedWork.value,
-        branchId      : selectedBranch.value,
+        empParamStr   : props.id,
+        deptId        : parseInt(selectedDept),
+        desigId       : parseInt(selectedDesg),
+        dateOfJoining : Doj,
+        workType      : parseInt(selectedWork),
+        branchId      : parseInt(selectedBranch),
       }
+  
+      if(selectedDept === "" || null || undefined ){
+        errors.deptId.required = true
+        hasError = true
+      }
+      if(selectedDesg === "" || null || undefined ){
+        errors.desigId.required = true
+        hasError = true
+      }
+      if(selectedWork === "" || null || undefined ){
+        errors.workType.required = true
+        hasError = true
+      }
+      if(selectedBranch === "" || null || undefined ){
+        errors.branchId.required = true
+        hasError = true
+      }
+      if(Doj === "" || null || undefined ){
+        errors.dateOfJoining.required = true
+        hasError = true
+      }
+
       const data = {...values,...additional}
-      console.log('data = ',data);
-  
-      // if(selectedGender.value === "" || null || undefined ){
-      //   errors.Gender.required = true
-      //   hasError = true
-      // }
-  
-      if(!hasError){
+
+      if(!hasError){  
+        JOINENTRY(data).then((res) => {
+          const type = res.data.result
+          const msg  = res.data.Msg 
+          if(res.data.result === 'success'){
+              ToastLeft(msg,type)
+              setLoading(false)
+              handleReset()
+          }
+          else if(res.data.result === 'Failed'){
+              ToastLeft(msg,type)
+              setLoading(true)
+          }
+          setLoading(false)
+        }).catch(err => ToastLeft(err,'Failed')).finally(setLoading(false))
       }
       setErrors({...errors})
     }
@@ -153,9 +193,9 @@ export default function JoiningEntryForm() {
           </Card.Header>
         <Card.Body>
             <div className="form-group">
-              <Form.Label>Work Email</Form.Label>
+              <Form.Label>Work Email <span className='text-danger'>*</span></Form.Label>
               <input type="text" name="workEmail" required placeholder="Enter work email..." className="form-control mb-2"
-                //value   ={on_submit.values.workEmail}
+                value   ={on_submit.values.workEmail}
                 onChange={on_submit.handleChange} 
                 onBlur  ={on_submit.handleBlur} />   
                 {                              
@@ -166,7 +206,7 @@ export default function JoiningEntryForm() {
             </div>
 
             <div className="form-group">
-              <Form.Label>Department</Form.Label>
+              <Form.Label>Department <span className='text-danger'>*</span></Form.Label>
               <select className='form-control Select' onChange={handleDepartmentChange} required={true} name="deptId">
                   <option value="">Select department</option>  
                   {
@@ -180,14 +220,12 @@ export default function JoiningEntryForm() {
                   }
               </select>
               {                              
-                  on_submit.touched.country && on_submit.errors.country ?( 
-                      <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.country}</p> 
-                  ): null
+                errors.deptId.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
               }
             </div>
 
             <div className="form-group">
-              <Form.Label>Designation</Form.Label>
+              <Form.Label>Designation <span className='text-danger'>*</span></Form.Label>
               <select className='form-control Select' onChange={handleDesignationChange} required={true} name="desigId">
                   <option value="">Select designation</option>  
                   {
@@ -201,44 +239,43 @@ export default function JoiningEntryForm() {
                   }
               </select>
               {                              
-                  on_submit.touched.country && on_submit.errors.country ?( 
-                      <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.country}</p> 
-                  ): null
+                errors.desigId.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
               }
             </div>
 
             <div className="form-group">
               <Form.Label htmlFor='DateOfBirth'>Date Of Joining <span className='text-danger'>*</span></Form.Label>
               <InputGroup>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker style={{height:'41px'}} value={Datevalue} onChange={setDatevalue} renderInput={(params) => <TextField {...params} />}/>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+                  <DatePicker value={doj} onChange={setDoj} renderInput={(params) => <TextField {...params} />}/>
                 </LocalizationProvider>
-              </InputGroup>                        
+              </InputGroup>   
+              {                              
+                errors.dateOfJoining.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
+              }               
             </div>
 
             <div className="form-group">
-              <Form.Label>Work Type</Form.Label>
+              <Form.Label>Work Type <span className='text-danger'>*</span></Form.Label>
               <select className='form-control Select' onChange={handleWorkChange} required={true} name="workType">
                   <option value="">Select work type</option>  
                   {
-                      work.map((dt) => {
-                          return(
-                              <option key={dt.Id} value={dt.Id}>
-                                  {dt.Name}
-                              </option>
-                          )
-                      })
+                    work.map((dt) => {
+                        return(
+                            <option key={dt.Id} value={dt.Id}>
+                                {dt.Name}
+                            </option>
+                        )
+                    })
                   }
               </select>
               {                              
-                  on_submit.touched.country && on_submit.errors.country ?( 
-                      <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.country}</p> 
-                  ): null
+                errors.workType.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
               }
             </div>
 
             <div className="form-group">
-              <Form.Label>Branch</Form.Label>
+              <Form.Label>Branch <span className='text-danger'>*</span></Form.Label>
               <select className='form-control Select' onChange={handleBranchChange} required={true} name="branchId">
                   <option value="">Select branch</option>  
                   {
@@ -252,36 +289,42 @@ export default function JoiningEntryForm() {
                   }
               </select>
               {                              
-                  on_submit.touched.country && on_submit.errors.country ?( 
-                      <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.country}</p> 
-                  ): null
+                errors.branchId.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
               }
             </div>
 
             <div className="form-group">
-              <Form.Label>Leave Credits</Form.Label>
-              <input type="text" name="workEmail" required placeholder="Enter work email..." className="form-control mb-2"
-                //value   ={on_submit.values.workEmail}
+              <Form.Label>Leave Credits <span className='text-danger'>*</span></Form.Label>
+              <input type="text" name="leaveCredits" required placeholder="Enter work email..." className="form-control mb-2"
+                value   ={on_submit.values.leaveCredits}
                 onChange={on_submit.handleChange} 
                 onBlur  ={on_submit.handleBlur} />   
                 {                              
-                    on_submit.touched.workEmail  &&  on_submit.errors.workEmail  ?( 
-                        <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.workEmail }</p> 
+                    on_submit.touched.leaveCredits  &&  on_submit.errors.leaveCredits  ?( 
+                        <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.leaveCredits }</p> 
                     ): null
                 }
             </div>
 
             <div className="form-group">
-              <Form.Label>Salary</Form.Label>
-              <input type="text" name="workEmail" required placeholder="Enter salary..." className="form-control mb-2"
-                //value   ={on_submit.values.workEmail}
+              <Form.Label>Salary <span className='text-danger'>*</span></Form.Label>
+              <input type="text" name="salary" required placeholder="Enter salary..." className="form-control mb-2"
+                value   ={on_submit.values.salary}
                 onChange={on_submit.handleChange} 
                 onBlur  ={on_submit.handleBlur} />   
                 {                              
-                    on_submit.touched.workEmail  &&  on_submit.errors.workEmail  ?( 
-                        <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.workEmail }</p> 
+                    on_submit.touched.salary  &&  on_submit.errors.salary  ?( 
+                        <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.salary }</p> 
                     ): null
                 }
+            </div>
+
+            <div className="form-group">
+              <Form.Label>Login Url</Form.Label>
+              <input type="text" name="loginUrl" required placeholder="Enter login Url..." className="form-control mb-2"
+                value   ={on_submit.values.loginUrl}
+                onChange={on_submit.handleChange} 
+                onBlur  ={on_submit.handleBlur} />   
             </div>
             <hr />
             {

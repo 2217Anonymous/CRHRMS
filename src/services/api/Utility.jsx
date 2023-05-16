@@ -17,7 +17,7 @@ export const addModule = (props) => {
 }
 
 export const moduleStatus = (pk) => {
-    const data = {id:parseInt(pk)}
+    const data = {id:parseInt(pk),...browser}
     return axios.post(MODULE_STATUS_URL,data)
 }
 

@@ -123,8 +123,7 @@ export const APPLICATION = (async (id) => {
 })
 
 export const JOINENTRY = (async (data) => {
-    console.log(data);
-    const dt = {workEmail:data.workEmail,leaveCredits:data.leaveCredits,salary:data.salary,loginUrl:data.loginUrl,deptId:data.deptId,desigId:data.desigId,dateOfJoining:data.dateOfJoining,workType:data.workType,branchId:data.branchId,...browser}
+    const dt = {workEmail:data.workEmail,leaveCredits:parseInt(data.leaveCredits),salary:parseInt(data.salary),loginUrl:data.loginUrl,deptId:data.deptId,desigId:data.desigId,dateOfJoining:data.dateOfJoining,workType:data.workType,branchId:data.branchId,empParamStr:data.empParamStr,...browser}
     return await axios.post(EMPLOYEE_JOIN_ENTRY,dt)
 })
 

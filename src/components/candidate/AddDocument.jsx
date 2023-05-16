@@ -48,8 +48,6 @@ export default function AddDocument(props) {
             const type = res.data.result
             const msg = res.data.Msg 
             if(res.data.result === 'success'){
-                alert(1)
-                console.log(res.data.Data);
                 handleClose()
                 getDocument()
                 ToastLeft(msg,type)
@@ -71,7 +69,7 @@ export default function AddDocument(props) {
         <ToastContainer />
         <Modal show={show} onHide={handleClose}>
             <Modal.Header>
-                <Modal.Title>New File Upload {masterId} {doc_type_Name}</Modal.Title>
+                <Modal.Title>New File Upload</Modal.Title>
                 <span className="d-flex ms-auto" onClick={handleClose}><i className='fe fe-x ms-auto' ></i></span>
             </Modal.Header>
             <Modal.Body>

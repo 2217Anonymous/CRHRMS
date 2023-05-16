@@ -14,7 +14,6 @@ export default function NewCompany() {
   useEffect(() => {
     
   },[])
-  console.log(getPermission());
   return (
     <>
       <AddCompany />
