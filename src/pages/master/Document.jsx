@@ -146,7 +146,7 @@ export default function Document() {
 
     if(!isAuthenticated()){
         navigate('/')
-      }
+    }
   return (
     <>
         <PageHeader titles="Documents" active="Documents" items={['Master']} />

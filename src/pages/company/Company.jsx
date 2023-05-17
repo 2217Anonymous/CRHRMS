@@ -9,6 +9,7 @@ export default function Company() {
   if(!isAuthenticated()){
     navigate('/')
   }
+  
   return (
     <>
       <CompanyList /> 

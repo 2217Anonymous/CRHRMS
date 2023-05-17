@@ -136,7 +136,6 @@ export default function Modulelist() {
   return (
     <>
     <div>
-        <PageHeader titles="Module" active="Module" items={['Home']} />
         <ToastContainer />
         {/* <!-- ROW-1 OPEN --> */}
         <Row>

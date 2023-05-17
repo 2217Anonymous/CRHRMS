@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { Badge, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
-import { GETQUALIFICATION, INSERTQUALIFICATION, QUALIFICATIONSTATUS } from '../../services/api/Master'
-import axios from 'axios'
+import { QUALIFICATIONSTATUS } from '../../services/api/Master'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { ToastContainer } from 'react-toastify'
 import PageHeader from '../../layouts/PageHeader/PageHeader'
-import { getUserData } from '../../services/storage/Storage'
 import Loader from '../../services/loader/Loader'
 import { ToastLeft } from '../../services/notification/Notification'
 import Datatable from '../../components/Helper/Datatable'
 import { isAuthenticated } from '../../services/Auth'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchQualificationData } from '../../Redux/slice/Master/Qualification'
+import { addQualificationData,fetchQualificationData } from '../../Redux/slice/Master/Qualification'
 import { checkPermission } from '../../services/Permission'
 import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
-
-const authToken = getUserData()
 
 export const COLUMNS = [
     {
@@ -45,40 +41,11 @@ export const COLUMNS = [
 
 export default function Qualification() {
     const navigate = useNavigate()
-    const [loading,setLoading] = useState(true)
+    const dispatch = useDispatch()
+
+    const [loading,setLoading] = useState(false)
     const [DATATABLE,setDATATABLE] = useState([])
 
-    const statusClick = (pk) => {
-        QUALIFICATIONSTATUS(pk).then(res => {
-            getQualificationList()
-            const type = res.data.result
-            const msg = res.data.Msg 
-            if(res.data.result === 'success'){
-                ToastLeft(msg,type)
-                setLoading(true)
-            }
-            else if(res.data.result === 'Failed'){
-                ToastLeft(msg,type)
-                setLoading(true)
-            }
-        }).catch((error) => {
-            ToastLeft(error.message,"Failed");
-        })
-    }
-
-    useEffect(() => {
-        axios.interceptors.request.use(
-            config => {
-                config.headers.authorization = `Bearer ${authToken}`;
-                return config;
-            },
-            error => {
-                return Promise.reject(error);
-        })
-
-        getQualificationList()
-    },[])
-      
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -89,17 +56,41 @@ export default function Qualification() {
             description : '',
         },
         validationSchema:yup.object({
-            qualification : yup.string()
-          .required("qualification is required")
+            qualification : yup.string().required("qualification is required")
         }),
         onSubmit:(userInputData) => {
-          setLoading(true)
-            INSERTQUALIFICATION(userInputData).then((res) => {
+            setLoading(false)
+            dispatch(addQualificationData(userInputData)).then(action => {
                 handleClose()
-                getQualificationList()
+                const res = action.payload;
+                const type = res.result
+                const msg = res.Msg 
+                if(res.result === 'success'){
+                    ToastLeft(msg,type)
+                    setLoading(false)
+                    dispatch(fetchQualificationData())
+                }
+                else if(res.data.result === 'Failed'){
+                    ToastLeft(msg,type)
+                    setLoading(true)
+                }
+            }).catch(err => ToastLeft(err,'Failed')).finaly(() => setLoading(false))
+        }
+    }) 
+
+    const qualificationList = useSelector((state) => state.qualification.qualificationList.Data)
+    
+    useEffect(() => {
+        dispatch(fetchQualificationData())
+    },[dispatch])
+
+    useEffect(() => {
+        const statusClick = (pk) => {
+            QUALIFICATIONSTATUS(pk).then(res => {
                 const type = res.data.result
                 const msg = res.data.Msg 
                 if(res.data.result === 'success'){
+                    dispatch(fetchQualificationData())
                     ToastLeft(msg,type)
                     setLoading(true)
                 }
@@ -111,43 +102,35 @@ export default function Qualification() {
                 ToastLeft(error.message,"Failed");
             })
         }
-    }) 
 
-    const dispatch = useDispatch()
-    const {qualificationList} = useSelector((state) => state.qualification);
-    
-    const getQualificationList = (() => {
-        GETQUALIFICATION().then((res) => {
-            const data = res.data.Data
-            const tableData = data.map((res) => ({
-              QUALIFICATION : res.Qualification,
-              DESCRIPTION : res.Description,
-              STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
-              ACTION      : (<>
-                {
-                  checkPermission('Qualifications_Edit') ? (
-                      <>
-                      {
-                          res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
-                         : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
-                      }
-                      </>) : ''
-                }
-                </>)
-            }))
-            setDATATABLE(tableData)
-        }).catch((error) => {
-            ToastLeft(error.message,"Failed");
+        const getQualification = (() => {
+            if (qualificationList) {
+                const tableData = qualificationList.map((res) => ({
+                    QUALIFICATION : res.Qualification,
+                    DESCRIPTION : res.Description,
+                    STATUS      : res.IsActive ? <Badge bg="success">Active</Badge> : <Badge bg="danger">De Active</Badge> ,
+                    ACTION      : (<>
+                    {
+                        checkPermission('Qualifications_Edit') ? (
+                            <>
+                            {
+                                res.IsActive ? <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >De active</Tooltip>}><span className="zmdi zmdi-eye me-2 text-primary"></span></OverlayTrigger></Link>
+                            : <Link onClick={() => statusClick(res.Id)}><OverlayTrigger placement="top" overlay={<Tooltip >Active</Tooltip>}><span className="zmdi zmdi-eye-off me-2 text-danger"></span></OverlayTrigger></Link>
+                            }
+                            </>) : ''
+                    }
+                    </>)
+                }))
+                setDATATABLE(tableData)
+            }
         })
-    })
 
-    useEffect(() => {
-        dispatch(fetchQualificationData())
-    },[dispatch])
+        getQualification()
+    },[qualificationList,dispatch])
 
     if(!isAuthenticated()){
         navigate('/')
-      }
+    }
   return (
     <>
         <PageHeader titles="Qualification" active="Qualification" items={['Pages']} />
@@ -174,7 +157,7 @@ export default function Qualification() {
             </Modal.Body>
             <Modal.Footer>
             {
-                loading ? (
+                !loading ? (
                     <>
                         <Button variant="success" onClick={on_submit.handleSubmit}>
                             Save Changes

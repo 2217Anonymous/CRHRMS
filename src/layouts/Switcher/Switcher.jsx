@@ -229,7 +229,6 @@ const Switcher = () => {
 
   useEffect(() => {
     SwitcherData.localStorageBackUp();
-
   })
 
   return (

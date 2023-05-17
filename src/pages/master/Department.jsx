@@ -140,7 +140,7 @@ export default function Departments() {
 
     if(!isAuthenticated()){
         navigate('/')
-      }
+    }
   return (
     <>
         <PageHeader titles="Departments" active="Departments" items={['Pages']} />

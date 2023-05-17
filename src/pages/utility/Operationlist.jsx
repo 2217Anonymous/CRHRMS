@@ -104,7 +104,6 @@ export default function Operationlist() {
   return (
     <>
     <div>
-        <PageHeader titles="Operation" active="Operation" items={['Home']} />
         <ToastContainer />
         {/* <!-- ROW-1 OPEN --> */}
         <Row>

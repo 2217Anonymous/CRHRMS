@@ -36,7 +36,7 @@ export const addSubModule = (props) => {
 }
 
 export const subModuleStatus = (pk) => {
-    const data = {id:parseInt(pk)}
+    const data = {id:parseInt(pk),...browser}
     return axios.post(SUBMODULE_STATUS_URL,data)
 }
 
@@ -50,7 +50,7 @@ export const operationList = async () => {
 }
 
 export const operationStatus = (pk) => {
-    const data = {id:parseInt(pk)}
+    const data = {id:parseInt(pk),...browser}
     return axios.post(OPERATION_STATUS_URL,data)
 }
 

@@ -159,7 +159,7 @@ export default function Gender() {
 
     if(!isAuthenticated()){
         navigate('/')
-      }
+    }
   return (
     <>
         <PageHeader titles="Designation" active="Designation" items={['Pages']} />

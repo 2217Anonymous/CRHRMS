@@ -1,27 +1,43 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import styles from '../../layouts/PageHeader/PageHeader.module.scss';
 import { Card, Col, Nav, Row, Tab } from 'react-bootstrap'
 import Modulelist from '../utility/Modulelist'
 import SubModule from '../utility/SubModule'
 import Operationlist from '../utility/Operationlist'
 import InsertModuleOperation from '../utility/InsertModuleOperation'
 import { useNavigate } from 'react-router-dom'
-import PageHeader from '../../layouts/PageHeader/PageHeader'
 import { isSortAdmin } from '../../services/Auth'
+import secureLocalStorage from 'react-secure-storage';
 
 
 export default function Utility() {
     const navigate = useNavigate()
 
+    const logOut = (() => {
+      secureLocalStorage.removeItem("adminPass")
+      navigate("/sortscript-admin")
+    })
+
+    if(!isSortAdmin()){
+      navigate("/sortscript-admin")
+    }
+
     useEffect(() => {
+
     },[])
-    
-    // if(!isSortAdmin()){
-    //     navigate("/sortscript-admin")
-    // }
 
   return (
     <>
-    <PageHeader titles="Utility" active="Utility" items={['Home']} />
+    <div className={styles.PageHeader}>
+      {/* <!-- PAGE-HEADER --> */}
+      <div className="page-header">
+        <h1 className="page-title">Utility</h1>
+        <div>
+          <button className='btn btn-danger btn-sm' onClick={logOut}>Logout</button>
+        </div>
+      </div>
+      {/* <!-- PAGE-HEADER END --> */}
+    </div>
     <Row>
         <Col sm={12}>
           <Card>

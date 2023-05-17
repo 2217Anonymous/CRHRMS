@@ -10,7 +10,6 @@ import { getUserData } from '../../services/storage/Storage';
 import { activeModuleList, addSubModule, subModuleList, subModuleStatus } from '../../services/api/Utility';
 import { ToastLeft } from '../../services/notification/Notification';
 import { isAuthenticated } from '../../services/Auth';
-import PageHeader from '../../layouts/PageHeader/PageHeader';
 import Loader from '../../services/loader/Loader';
 import Datatable from '../../components/Helper/Datatable';
 
@@ -155,7 +154,6 @@ export default function SubModule() {
   return (
     <>
     <div>
-        <PageHeader titles="Sub Module" active="Sub Module" items={['Home']} />
         <ToastContainer />
 
         {/* <!-- ROW-1 OPEN --> */}

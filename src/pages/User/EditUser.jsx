@@ -97,7 +97,7 @@ export default function EditUser() {
       })
       getUser()
       // getPermissionData()
-  },[])
+    },[])
 
   if(!isAuthenticated()){
     navigate('/')

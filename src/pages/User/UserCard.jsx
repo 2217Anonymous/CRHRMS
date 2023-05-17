@@ -50,7 +50,7 @@ export default function UserCard() {
 
     if(!isAuthenticated()){
         navigate('/')
-      }
+    }
   return (
     <>
         <PageHeader titles="USERS" active="Users" items={['Apps']} />

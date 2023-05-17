@@ -13,6 +13,7 @@ import { isAuthenticated } from '../../services/Auth';
 const authToken = getUserData()
 
 export default function Permission(props) {
+    const navigate =  useNavigate()
     const [checkboxList, setCheckboxList] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
     const [loading,setLoading] = useState(true)
@@ -128,6 +129,9 @@ export default function Permission(props) {
         })
     };
 
+    if(!isAuthenticated()){
+        navigate('/')
+    }
     return (
     <>
         <ToastContainer />

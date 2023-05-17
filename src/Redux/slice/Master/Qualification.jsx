@@ -1,5 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { GETQUALIFICATION } from '../../../services/api/Master';
+import { GETQUALIFICATION, INSERTQUALIFICATION } from '../../../services/api/Master';
+
+export const addQualificationData = createAsyncThunk('data/addQualificationData', async (task) => {
+    return INSERTQUALIFICATION(task).then((res) => {
+        return res.data
+     })
+})
 
 export const fetchQualificationData = createAsyncThunk('data/fetchQualificationData', async () => {
     return GETQUALIFICATION().then((res) => {
@@ -13,21 +19,19 @@ const qualificationSlice = createSlice({
         qualificationList : [],
         status : ""
     },
-    reducers: {},
+    reducers: {
+      addQualification : (state,action) => {
+        let task = {...action.payload}
+        state.qualificationList.push(task)
+      },
+    },
+
     extraReducers: (builder) => {
         builder
-        .addCase(fetchQualificationData.pending, (state) => {
-          state.status    = 'loading';
-        })
         .addCase(fetchQualificationData.fulfilled, (state, action) => {
           state.status    = 'succeeded';
           state.qualificationList = action.payload;
         })
-        .addCase(fetchQualificationData.rejected, (state, action) => {
-          state.status    = 'failed';
-          state.error     = action.error.message;
-          state.qualificationList = []
-        });
     },
 });
 

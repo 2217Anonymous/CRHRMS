@@ -132,7 +132,7 @@ export default function Marital() {
 
     if(!isAuthenticated()){
         navigate('/')
-      }
+    }
   return (
     <>
         <PageHeader titles="Marital" active="Marital" items={['Pages']} />

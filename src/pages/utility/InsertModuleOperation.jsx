@@ -118,7 +118,6 @@ export default function InsertModuleOperation() {
   return (
     <>
     <div>
-        <PageHeader titles="Insert Operation" active="Insert Operation" items={['Home']} />
         <ToastContainer />
         {/* <!-- ROW-1 OPEN --> */}
         <Row>

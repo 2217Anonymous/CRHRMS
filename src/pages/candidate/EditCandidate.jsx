@@ -10,7 +10,6 @@ import AddLanguage from '../../components/candidate/AddLanguage'
 import AddQualification from '../../components/candidate/AddQualification'
 import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 import { checkPermission } from '../../services/Permission'
-import CandidateDocument from '../../components/candidate/CandidateDocument'
 import AddDocument from '../../components/candidate/AddDocument'
 
 

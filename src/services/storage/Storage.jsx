@@ -20,8 +20,8 @@ export const getUserId = (() => {
     return secureLocalStorage.getItem('userId')
 }) 
 
-export const storeAdminData = ((data) => {
-    secureLocalStorage.setItem('adminPass',data)
+export const storeAdminData = (() => {
+    secureLocalStorage.setItem('adminPass','Falcon_4817')
 }) 
 
 export const getAdminData = (() => {

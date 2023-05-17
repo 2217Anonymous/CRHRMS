@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PageHeader from '../../layouts/PageHeader/PageHeader'
 import { Badge, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { ToastContainer } from 'react-toastify'
@@ -11,6 +11,7 @@ import { BLOODSTATUS, GETBLOOD, INSERTBLOOD } from '../../services/api/Master'
 import Datatable from '../../components/Helper/Datatable'
 import { checkPermission } from '../../services/Permission'
 import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
+import { isAuthenticated } from '../../services/Auth'
 
 export const COLUMNS = [
     {
@@ -31,6 +32,7 @@ export const COLUMNS = [
 ];
 
 export default function Blood() {
+    const navigate = useNavigate()
     const [loading,setLoading] = useState(true)
     const [DATATABLE,setDATATABLE] = useState([])
 
@@ -88,9 +90,9 @@ export default function Blood() {
         initialValues : {
           name : '',
         },
+
         validationSchema:yup.object({
-            name : yup.string()
-          .required("Blood Group is required")
+            name : yup.string().required("Blood Group is required")
         }),
         onSubmit:(userInputData) => {
             setLoading(true);
@@ -114,6 +116,9 @@ export default function Blood() {
         }
     }) 
 
+    if(!isAuthenticated()){
+        navigate('/')
+    }
 
   return (
     <>
