@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addQualificationData,fetchQualificationData } from '../../Redux/slice/Master/Qualification'
 import { checkPermission } from '../../services/Permission'
 import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
+import QualificationModel from './models/QualificationModel'
 
 export const COLUMNS = [
     {
@@ -45,38 +46,15 @@ export default function Qualification() {
 
     const [loading,setLoading] = useState(false)
     const [DATATABLE,setDATATABLE] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
 
-    const on_submit =  useFormik({
-        initialValues : {
-            qualification : '',
-            description : '',
-        },
-        validationSchema:yup.object({
-            qualification : yup.string().required("qualification is required")
-        }),
-        onSubmit:(userInputData) => {
-            setLoading(false)
-            dispatch(addQualificationData(userInputData)).then(action => {
-                handleClose()
-                const res = action.payload;
-                const type = res.result
-                const msg = res.Msg 
-                if(res.result === 'success'){
-                    ToastLeft(msg,type)
-                    setLoading(false)
-                    dispatch(fetchQualificationData())
-                }
-                else if(res.data.result === 'Failed'){
-                    ToastLeft(msg,type)
-                    setLoading(true)
-                }
-            }).catch(err => ToastLeft(err,'Failed')).finaly(() => setLoading(false))
-        }
-    }) 
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     const qualificationList = useSelector((state) => state.qualification.qualificationList.Data)
     
@@ -135,54 +113,19 @@ export default function Qualification() {
     <>
         <PageHeader titles="Qualification" active="Qualification" items={['Pages']} />
         <ToastContainer />
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header>
-                <Modal.Title>New Qualification</Modal.Title>
-                <span className="d-flex ms-auto" onClick={handleClose}><i className='fe fe-x ms-auto' ></i></span>
-            </Modal.Header>
-            <Modal.Body>
-                <Form>
-                    <div className="form-group">
-                        <Form.Label>Qualification</Form.Label>
-                        <input className="form-control" name="qualification" required type="text" onChange={on_submit.handleChange} placeholder="Enter qualification" />
-                        {                              
-                            on_submit.touched.qualification && on_submit.errors.qualification ? <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.qualification}</p> : null
-                        } 
-                    </div>
-                    <div className="form-group">
-                        <Form.Label>Description</Form.Label>
-                        <textarea className="form-control mb-4" onChange={on_submit.handleChange} name="description" required placeholder="Enter description" rows={4}></textarea>
-                    </div>
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-            {
-                !loading ? (
-                    <>
-                        <Button variant="success" onClick={on_submit.handleSubmit}>
-                            Save Changes
-                        </Button>
-                        <Button variant="danger" onClick={handleClose}>
-                            Close
-                        </Button>
-                    </>
-                ) : (<Loader />)
-            }
-              
-            </Modal.Footer>
-        </Modal>
         <Row>
             <Col xl={12}>
                 <Card>
                     <Card.Header>
                         <Card.Title>Qualification</Card.Title>
+                        <QualificationModel isOpen={isModalOpen} onClose={closeModal} />
                         {
-                            checkPermission('Qualifications_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={handleShow}>Add Qualification</button> : ''
+                            checkPermission('Qualifications_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={openModal}>Add Qualification</button> : ''
                         }
                     </Card.Header>
                     <Card.Body>
                         {
-                            checkPermission('Qualifications_List') ?<Datatable data={DATATABLE} col={COLUMNS} />:<AuthError/>
+                            checkPermission('Qualifications_List') ? <Datatable data={DATATABLE} col={COLUMNS} />:<AuthError/>
                         }
                     </Card.Body>
                 </Card>

@@ -46,7 +46,7 @@ export const COLUMNS = [
       accessor: "ACTION",
       className: "text-center wd-15p border-bottom-0 ",
     },
-  ];
+];
 
 export default function Gender() {
     const navigate = useNavigate()
@@ -126,15 +126,13 @@ export default function Gender() {
 
     const on_submit =  useFormik({
         initialValues : {
-            deptName : '',
-            designName : '',
+            deptName    : '',
+            designName  : '',
             description : '',
         },
         validationSchema:yup.object({
-            deptName : yup.string()
-            .required("Select atleast one department"),
-            designName : yup.string()
-            .required("Designation is required"),
+            deptName : yup.string().required("Select atleast one department"),
+            designName : yup.string().required("Designation is required"),
         }),
         onSubmit:(userInputData) => {
           setLoading(true)

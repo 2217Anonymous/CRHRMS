@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Collapse, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Badge, Col, Collapse, Form, FormControl, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Datatable from '../Helper/Datatable';
 import { ADDQUALIFICATION, DELETEQUALIFICATION, GETCANDIDATEQUALIFICATION } from '../../services/api/Hrms';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,9 @@ import * as Yup from 'yup';
 import Select from 'react-select';
 import { GETQUALIFICATION } from '../../services/api/Master';
 import Loader from '../../services/loader/Loader';
+import QualificationModel from '../../pages/master/models/QualificationModel';
+import { fetchQualificationData } from '../../Redux/slice/Master/Qualification';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const COLUMNS = [
     {
@@ -45,6 +48,7 @@ export const COLUMNS = [
 ];
 
 export default function AddQualification(props) {
+    const dispatch = useDispatch()
     //ERRORS
     const initialStateErrors = {
         CourseId     : { required:false },
@@ -66,17 +70,29 @@ export default function AddQualification(props) {
     const [courseId,setCourseId] = useState()
     const [selectedCourseId,setSelectedCourseId] = useState()
 
-    //GET DROPDOWN
-    const getDropQualification = (() => {
-        GETQUALIFICATION().then((res) => {
-            const data = res.data.Data
-            const drobValue = data.filter(dt => dt.IsActive === true).map((res) => ({
-                value : res.Id,
-                label : res.Qualification
-            }))
-            setCourseId(drobValue)
+    const qualificationList = useSelector((state) => state.qualification.qualificationList.Data)
+    useEffect(() => {
+        const getQualification = (() => {
+            if (qualificationList) {
+                const drobValue = qualificationList.filter(dt => dt.IsActive === true).map((res) => ({
+                    value : res.Id,
+                    label : res.Qualification                    
+                }))
+                setCourseId(drobValue)
+            }
         })
-    })
+
+        getQualification()
+    },[qualificationList,dispatch])
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     //GET QUALIFICATION
     const getCandidateQualification = (() => {
@@ -169,10 +185,12 @@ export default function AddQualification(props) {
         validationSchema,
         onSubmit,
     })
+    useEffect(() => {
+        dispatch(fetchQualificationData())
+    },[dispatch])
 
     useEffect(() => {   
         getCandidateQualification()
-        getDropQualification()
     },[])  
     
   return (
@@ -182,17 +200,21 @@ export default function AddQualification(props) {
                 <div className="card-options d-flex justify-content-end">
                     <button className='btn btn-sm btn-success' onClick={InitialHandleExpandClick}> Add New Language <i className={`fe ${InitialExpanded ? 'fe-chevron-up' : 'fe-chevron-down'}`}></i></button>
                 </div>
-            
+                <QualificationModel isOpen={isModalOpen} onClose={closeModal} />
                 <Collapse in={InitialExpanded} timeout={2000}>
                     <form onSubmit={on_submit.handleSubmit}>
                         <div className='row'>
-                            <div className='col-md-12'>
-                                <Form.Label>Select Course</Form.Label>
-                                <Select options={courseId} id='CourseId' value={selectedCourseId} onChange={setSelectedCourseId} name='MaritalStatus' placeholder='choose one' classNamePrefix='Select' />
-                                {                              
-                                    errors.CourseId.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
-                                }
+                            <div className='col-md-11'>
+                                <Form.Group>
+                                    <Form.Label>Select Course</Form.Label>
+                                    <Select options={courseId} id='CourseId' value={selectedCourseId} onChange={setSelectedCourseId} name='MaritalStatus' placeholder='choose one' classNamePrefix='Select' />
+                                    <small id="emailHelp" className="form-text text-muted">If want to add a new qualification? <span onClick={openModal} style={{cursor: 'pointer'}}>Click here</span></small>
+                                    {                              
+                                        errors.CourseId.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
+                                    }
+                                </Form.Group>
                             </div>
+                            
                         </div>
                         <div className='row'>
                             <div className='col-md-6'>
