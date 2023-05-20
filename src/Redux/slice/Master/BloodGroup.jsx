@@ -1,32 +1,32 @@
-// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import { GETBLOOD } from '../../services/api/Master';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { GETBLOOD, INSERTBLOOD } from "../../../services/api/Master";
 
-// export const fetchBloodData = createAsyncThunk('data/fetchBloodData', async () => {
-//     return true
-// })
+export const addBloodGroupData = createAsyncThunk('data/addBloodGroupData',async(data) => {
+    return INSERTBLOOD(data).then(res => res.data)
+})
+export const fetchBloodGroupData = createAsyncThunk('data/fetchBloodGroupData',async() => {
+    return GETBLOOD().then(res => res.data)
+})
 
-// const bloodSlice = createSlice({
-//     name: 'bloodSlice',
-//     initialState : {
-//         bloodList : [],
-//         status : ""
-//     },
-//     reducers: {},
-//     extraReducers: (builder) => {
-//         builder
-//         .addCase(fetchBloodData.pending, (state) => {
-//           state.status    = 'loading';
-//         })
-//         .addCase(fetchBloodData.fulfilled, (state, action) => {
-//           state.status    = 'succeeded';
-//           state.bloodList = action.payload;
-//         })
-//         .addCase(fetchBloodData.rejected, (state, action) => {
-//           state.status    = 'failed';
-//           state.error     = action.error.message;
-//           state.bloodList = []
-//         });
-//     },
-// });
+const bloodGroupSlice = createSlice({
+    name            : 'bloodGroupSlice',
+    initialState    : {
+        bloodGroupList : [],
+        status : ''
+    },
+    reducers : {
+        addBloodGroup : (state,action) => {
+            let task = {...action.payload}
+            state.bloodGroupList.push(task)
+        }
+    },
+    extraReducers : (builder) => {
+        builder
+        .addCase(fetchBloodGroupData.fulfilled, (state,action) => {
+            state.status = 'succeeded'
+            state.bloodGroupList = action.payload
+        })
+    }
+})
 
-// export default bloodSlice.reducer;
+export default bloodGroupSlice.reducer

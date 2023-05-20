@@ -1,52 +1,51 @@
-import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
+import Loader from '../../../services/loader/Loader'
+import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { addQualificationData, fetchQualificationData } from '../../../Redux/slice/Master/Qualification'
-import { useDispatch } from 'react-redux';
-import { ToastLeft } from '../../../services/notification/Notification';
-import { isAuthenticated } from '../../../services/Auth';
-import { useNavigate } from 'react-router-dom';
-import Loader from '../../../services/loader/Loader';
+import { ToastLeft } from '../../../services/notification/Notification'
+import { useDispatch } from 'react-redux'
+import { addDepartmentData, fetchDepartmentData } from '../../../Redux/slice/Master/Department'
+import { isAuthenticated } from '../../../services/Auth'
+import { useNavigate } from 'react-router-dom'
 
-
-
-export default function QualificationModel({isOpen, onClose}) {
-    const dispatch = useDispatch()
+export default function DepartmentModel({isOpen, onClose}) {
     const navigate = useNavigate()
-
+    const dispatch = useDispatch()
     const [loading,setLoading] = useState(false)
 
     const on_submit =  useFormik({
         initialValues : {
-            qualification : '',
-            description : '',
+            deptName : '',
+          description : ''
         },
         validationSchema:yup.object({
-            qualification : yup.string().required("qualification is required")
+            deptName : yup.string()
+          .required("department is required")
         }),
         onSubmit:(userInputData) => {
-            setLoading(false)
-            dispatch(addQualificationData(userInputData)).then(action => {
+          setLoading(true)
+            dispatch(addDepartmentData(userInputData)).then((res) => {
                 onClose()
-                const res = action.payload;
-                const type = res.result
-                const msg = res.Msg 
-                if(res.result === 'success'){
+                const type = res.data.result
+                const msg = res.data.Msg 
+                if(res.data.result === 'success'){
                     ToastLeft(msg,type)
-                    setLoading(false)
-                    dispatch(fetchQualificationData())
+                    setLoading(true)
+                    dispatch(fetchDepartmentData())
                 }
                 else if(res.data.result === 'Failed'){
                     ToastLeft(msg,type)
                     setLoading(true)
                 }
-            }).catch(err => ToastLeft(err,'Failed')).finaly(() => setLoading(false))
+            }).catch((error) => {
+                ToastLeft(error.message,"Failed");
+            })
         }
     }) 
 
     useEffect(() => {
-        dispatch(fetchQualificationData())
+        dispatch(fetchDepartmentData())
     },[dispatch])
 
     if(!isAuthenticated()){
@@ -59,18 +58,18 @@ export default function QualificationModel({isOpen, onClose}) {
     
   return (
     <>
-        <Modal show={isOpen} onHide={onClose}>
+      <Modal show={isOpen} onHide={onClose}>
             <Modal.Header>
-                <Modal.Title>New Qualification</Modal.Title>
-                <span className="d-flex ms-auto" onClick={onClose}><i className='fe fe-x ms-auto' ></i></span>
+                <Modal.Title>New Department</Modal.Title>
+                <span className="d-flex ms-auto" onClick={isOpen}><i className='fe fe-x ms-auto' ></i></span>
             </Modal.Header>
             <Modal.Body>
                 <Form>
                     <div className="form-group">
-                        <Form.Label>Qualification</Form.Label>
-                        <input className="form-control" name="qualification" required type="text" onChange={on_submit.handleChange} placeholder="Enter qualification" />
+                        <Form.Label>Department</Form.Label>
+                        <input className="form-control" name="deptName" required type="text" onChange={on_submit.handleChange} placeholder="Enter department" />
                         {                              
-                            on_submit.touched.qualification && on_submit.errors.qualification ? <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.qualification}</p> : null
+                            on_submit.touched.deptName &&  on_submit.errors.deptName ? <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.deptName}</p> : null
                         } 
                     </div>
                     <div className="form-group">
@@ -92,9 +91,9 @@ export default function QualificationModel({isOpen, onClose}) {
                     </>
                 ) : (<Loader />)
             }
+              
             </Modal.Footer>
         </Modal>
-       
     </>
   )
 }

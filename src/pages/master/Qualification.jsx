@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Badge, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
+import { Badge, Card, Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { QUALIFICATIONSTATUS } from '../../services/api/Master'
-import { useFormik } from 'formik'
-import * as yup from 'yup'
 import { ToastContainer } from 'react-toastify'
 import PageHeader from '../../layouts/PageHeader/PageHeader'
-import Loader from '../../services/loader/Loader'
 import { ToastLeft } from '../../services/notification/Notification'
 import Datatable from '../../components/Helper/Datatable'
 import { isAuthenticated } from '../../services/Auth'
 import { useDispatch, useSelector } from 'react-redux'
-import { addQualificationData,fetchQualificationData } from '../../Redux/slice/Master/Qualification'
+import { fetchQualificationData } from '../../Redux/slice/Master/Qualification'
 import { checkPermission } from '../../services/Permission'
 import AuthError from '../../components/authentication/errorPage/AuthError/AuthError'
 import QualificationModel from './models/QualificationModel'
@@ -44,7 +41,6 @@ export default function Qualification() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const [loading,setLoading] = useState(false)
     const [DATATABLE,setDATATABLE] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -70,11 +66,9 @@ export default function Qualification() {
                 if(res.data.result === 'success'){
                     dispatch(fetchQualificationData())
                     ToastLeft(msg,type)
-                    setLoading(true)
                 }
                 else if(res.data.result === 'Failed'){
                     ToastLeft(msg,type)
-                    setLoading(true)
                 }
             }).catch((error) => {
                 ToastLeft(error.message,"Failed");
@@ -120,7 +114,7 @@ export default function Qualification() {
                         <Card.Title>Qualification</Card.Title>
                         <QualificationModel isOpen={isModalOpen} onClose={closeModal} />
                         {
-                            checkPermission('Qualifications_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={openModal}>Add Qualification</button> : ''
+                            checkPermission('Qualifications_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-outline-success' onClick={openModal}>Add Qualification</button> : ''
                         }
                     </Card.Header>
                     <Card.Body>

@@ -48,7 +48,6 @@ export const COLUMNS = [
 ];
 
 export default function AddQualification(props) {
-    const dispatch = useDispatch()
     //ERRORS
     const initialStateErrors = {
         CourseId     : { required:false },
@@ -69,7 +68,8 @@ export default function AddQualification(props) {
     //QUALIFICATION
     const [courseId,setCourseId] = useState()
     const [selectedCourseId,setSelectedCourseId] = useState()
-
+    
+    const dispatch = useDispatch()
     const qualificationList = useSelector((state) => state.qualification.qualificationList.Data)
     useEffect(() => {
         const getQualification = (() => {
@@ -93,6 +93,10 @@ export default function AddQualification(props) {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+    useEffect(() => {
+        dispatch(fetchQualificationData())
+    },[dispatch])
 
     //GET QUALIFICATION
     const getCandidateQualification = (() => {
@@ -185,9 +189,6 @@ export default function AddQualification(props) {
         validationSchema,
         onSubmit,
     })
-    useEffect(() => {
-        dispatch(fetchQualificationData())
-    },[dispatch])
 
     useEffect(() => {   
         getCandidateQualification()
@@ -198,7 +199,7 @@ export default function AddQualification(props) {
         <Col xl={12} md={12}>
             {Initialshow ? <>
                 <div className="card-options d-flex justify-content-end">
-                    <button className='btn btn-sm btn-success' onClick={InitialHandleExpandClick}> Add New Language <i className={`fe ${InitialExpanded ? 'fe-chevron-up' : 'fe-chevron-down'}`}></i></button>
+                    <button className='btn btn-sm  btn-outline-success' onClick={InitialHandleExpandClick}> Add New Language <i className={`fe ${InitialExpanded ? 'fe-chevron-up' : 'fe-chevron-down'}`}></i></button>
                 </div>
                 <QualificationModel isOpen={isModalOpen} onClose={closeModal} />
                 <Collapse in={InitialExpanded} timeout={2000}>
