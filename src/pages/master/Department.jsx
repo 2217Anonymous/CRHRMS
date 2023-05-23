@@ -110,7 +110,6 @@ export default function Departments() {
     <>
         <PageHeader titles="Departments" active="Departments" items={['Pages']} />
         <ToastContainer />
-        
         <Row>
             <Col xl={12}>
                 <Card>
@@ -118,7 +117,7 @@ export default function Departments() {
                         <Card.Title>Departments</Card.Title>
                         <DepartmentModel isOpen={isModalOpen} onClose={closeModal} />
                         {
-                            checkPermission('Departments_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success' onClick={openModal}>Add Department</button> : ''
+                            checkPermission('Departments_Add') ? <button style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-outline-success' onClick={openModal}>Add Department</button> : ''
                         }
                     </Card.Header>
                     <Card.Body>

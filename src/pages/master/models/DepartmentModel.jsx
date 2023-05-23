@@ -24,17 +24,17 @@ export default function DepartmentModel({isOpen, onClose}) {
           .required("department is required")
         }),
         onSubmit:(userInputData) => {
-          setLoading(true)
+          setLoading(false)
             dispatch(addDepartmentData(userInputData)).then((res) => {
-                onClose()
-                const type = res.data.result
-                const msg = res.data.Msg 
-                if(res.data.result === 'success'){
+                const type  = res.payload.result
+                const msg   = res.payload.Msg 
+                if(res.payload.result === 'success'){
                     ToastLeft(msg,type)
-                    setLoading(true)
+                    setLoading(false)
+                    onClose()
                     dispatch(fetchDepartmentData())
                 }
-                else if(res.data.result === 'Failed'){
+                else if(res.payload.result === 'Failed'){
                     ToastLeft(msg,type)
                     setLoading(true)
                 }
@@ -61,7 +61,7 @@ export default function DepartmentModel({isOpen, onClose}) {
       <Modal show={isOpen} onHide={onClose}>
             <Modal.Header>
                 <Modal.Title>New Department</Modal.Title>
-                <span className="d-flex ms-auto" onClick={isOpen}><i className='fe fe-x ms-auto' ></i></span>
+                <span className="d-flex ms-auto" onClick={onClose}><i className='fe fe-x ms-auto' ></i></span>
             </Modal.Header>
             <Modal.Body>
                 <Form>

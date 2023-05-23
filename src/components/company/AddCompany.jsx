@@ -178,7 +178,7 @@ export default function AddCompany() {
                     <Card.Header>
                         <Card.Title as="h3">New Company Register</Card.Title>
                         {
-                            checkPermission('Companies_List') ? <Link to={'/companies'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-success'>Company List</Link> : ''
+                            checkPermission('Companies_List') ? <Link to={'/companies'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-outline-success'>Company List</Link> : ''
                         }   
                     </Card.Header>
                     <Card.Body>
