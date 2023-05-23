@@ -52,7 +52,7 @@ export default function WorkType() {
         setIsModalOpen(false);
     };
 
-    const worktype_list = useSelector((state) => state.qualification.qualificationList.Data)
+    const worktype_list = useSelector((state) => state.workType.worktypeList.Data)
 
     useEffect(() => {
         const statusClick = (pk) => {

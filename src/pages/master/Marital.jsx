@@ -44,7 +44,7 @@ export default function Marital() {
     const closeModal = () => {
         setIsModalOpen(false);
     };
-    const matrial_list = useSelector((state) => state.gender.genderList.Data)
+    const matrial_list = useSelector((state) => state.marital.maritalList.Data)
 
     useEffect(() => {
         const statusClick = (pk) => {
