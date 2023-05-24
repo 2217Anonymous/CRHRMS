@@ -115,7 +115,7 @@ export default function NewUser() {
         <PageHeader titles="Users" active="Module" items={['Home']} />
         <Row>
         {
-          !checkPermission('Users_Add') ? (<>
+          checkPermission('Users_Add') ? (<>
             <Col xl={4}>
               <Card>
                 <Card.Header>

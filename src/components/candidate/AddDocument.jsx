@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { checkPermission } from '../../services/Permission'
 import { Link } from 'react-router-dom'
 import { GETDOCUMENT, UPLOADDOCUMENT } from '../../services/api/Hrms'
-import { Button, Collapse, Form, Modal } from 'react-bootstrap'
-import Loader from '../../services/loader/Loader'
+import { Button, Form, Modal } from 'react-bootstrap'
 import { ToastLeft } from '../../services/notification/Notification'
 import { ToastContainer } from 'react-toastify'
 
 
 export default function AddDocument(props) {
-    const [loading,setLoading]      = useState(false)
     const [data,setData]            = useState([])
     const [show, setShow]           = useState(false);
     const [masterId, setMasterId]   = useState('');
@@ -24,7 +22,6 @@ export default function AddDocument(props) {
 
     const getDocument = (() => {
         GETDOCUMENT(props.id).then(res => {
-            console.log(res.data.Data);
             setData(res.data.Data)
         })
     })
@@ -51,11 +48,9 @@ export default function AddDocument(props) {
                 handleClose()
                 getDocument()
                 ToastLeft(msg,type)
-                setLoading(false)
             }
             else if(res.data.result === 'Failed'){
                 ToastLeft(msg,type)
-                setLoading(true)
             }
         })
     })

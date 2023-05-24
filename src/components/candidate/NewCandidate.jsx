@@ -4,7 +4,6 @@ import PageHeader from '../../layouts/PageHeader/PageHeader';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Select from 'react-select';
-import { GETBLOOD, GETGENDER, GETMARITAL } from '../../services/api/Master';
 import { getComId } from '../../services/storage/Storage';
 import Loader from '../../services/loader/Loader';
 import { GETRESUMEMASTERID, NEWCANDIDATE } from '../../services/api/Hrms';
@@ -18,10 +17,17 @@ import { ToastLeft } from '../../services/notification/Notification';
 import { ToastContainer } from 'react-toastify';
 import { checkPermission } from '../../services/Permission';
 import AuthError from '../authentication/errorPage/AuthError/AuthError';
+import { useDispatch, useSelector } from 'react-redux';
+import GenderModel from '../../pages/master/models/GenderModel';
+import BloodModel from '../../pages/master/models/BloodModel';
+import MaritalModel from '../../pages/master/models/MaritalModel';
+import { fetchGenderData } from '../../Redux/slice/Master/Gender';
+import { fetchBloodGroupData } from '../../Redux/slice/Master/BloodGroup';
+import { fetchMaritalData } from '../../Redux/slice/Master/Marital';
 
 export default function NewEmployee() {
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const [loading,setLoading] = useState(false)
   const initialStateErrors = {
     MaritalStatus     : { required:false },
@@ -108,15 +114,12 @@ export default function NewEmployee() {
   const [selectedLicenceType,setSeletedLicienceType] = useState('')
   
   //GENDER
-  const [gender,setGender] = useState([])
   const [selectedGender,setSelectedGender] = useState()
   
   //MARITAL
-  const [marital,setMarital] = useState([])
   const [selectedMarital,setSelectedMarital] = useState([])
 
   //BLOOD GROUP
-  const [bloodGroup,setBloodGroup] = useState([])
   const [selectedBlood,setSelectedBlood] = useState([])
 
   //RESUME
@@ -126,50 +129,47 @@ export default function NewEmployee() {
   }
 
   //GET API
-  const getGender = (() => {
-    try {
-        GETGENDER().then((res) => {
-            const data = res.data.Data
-            const drobValue = data.filter(dt => dt.IsActive === true).map((res) => ({
+  const [gender,setGender]    = useState()
+  const [bloodGroup,setBlood] = useState()
+  const [marital,setMarital]  = useState()
+  const gender_list     = useSelector((state) => state.gender.genderList.Data)
+  const bloodGroupList  = useSelector((state) => state.bloodGroup.bloodGroupList.Data)
+  const matrial_list    = useSelector((state) => state.marital.maritalList.Data)
+
+  useEffect(() => {
+    const getGender = (() => {
+        if (gender_list) {
+            const drobValue = gender_list.filter(dt => dt.IsActive).map((res) => ({
                 value : res.Id,
-                label : res.GenName
+                label : res.GenName                    
             }))
             setGender(drobValue)
-        })
-    } catch (error) {
-        console.log(error);
-    }
-  })
-
-  const getBlood = (() => {
-    try {
-          GETBLOOD().then((res) => {
-            const data = res.data.Data
-            const drobValue = data.filter(dt => dt.IsActive === true).map((res) => ({
+        }
+    })
+    const getBlood = (() => {
+        if (bloodGroupList) {
+            const drobValue = bloodGroupList.filter(dt => dt.IsActive).map((res) => ({
                 value : res.Id,
-                label : res.Name
+                label : res.Name                    
             }))
-            setBloodGroup(drobValue)
-        })
-    } catch (error) {
-        console.log(error);
-    }
-  })
-
-  const getMirital = (() => {
-    try {
-          GETMARITAL().then((res) => {
-            const data = res.data.Data
-            const drobValue = data.filter(dt => dt.IsActive === true).map((res) => ({
+            setBlood(drobValue)
+        }
+    })
+    const getMarital = (() => {
+        if (matrial_list) {
+            const drobValue = matrial_list.filter(dt => dt.IsActive).map((res) => ({
                 value : res.Id,
-                label : res.Name
+                label : res.Name                    
             }))
             setMarital(drobValue)
-        })
-    } catch (error) {
-        console.log(error);
-    }
-  })
+        }
+    })
+
+    getGender()
+    getBlood()
+    getMarital()
+},[gender_list,bloodGroupList,matrial_list,dispatch])
+  
 
   const getMasterId = () => {
     GETRESUMEMASTERID().then(res => {
@@ -304,11 +304,25 @@ export default function NewEmployee() {
   })
 
   useEffect(() => {
-      getGender()
-      getBlood()
-      getMirital()
       getMasterId()
   },[])
+
+  const [isGenderModalOpen, setIsGenderModalOpen]   = useState(false);
+  const [isBloodModalOpen, setIsBloodModalOpen]     = useState(false);
+  const [isMaritalModalOpen, setIsMaritalModalOpen] = useState(false);
+
+  const openGenderModal   = () => setIsGenderModalOpen(true);
+  const openBloodModal    = () => setIsBloodModalOpen(true);
+  const openMaritalModal  = () => setIsMaritalModalOpen(true);
+  const closeGenderModal  = () => setIsGenderModalOpen(false);
+  const closeBloodModal   = () => setIsBloodModalOpen(false);
+  const closeMaritalModal = () => setIsMaritalModalOpen(false);
+
+  useEffect(() => {
+    dispatch(fetchGenderData())  
+    dispatch(fetchBloodGroupData())  
+    dispatch(fetchMaritalData())  
+  },[dispatch])
 
   if(!isAuthenticated()){
     navigate('/')
@@ -318,6 +332,11 @@ export default function NewEmployee() {
     <>
     <PageHeader titles="New Candidate" active="Candidate" items={['Company']} />
     <ToastContainer />
+    
+    <GenderModel  isOpen={isGenderModalOpen}  onClose={closeGenderModal} />
+    <BloodModel   isOpen={isBloodModalOpen}   onClose={closeBloodModal} />
+    <MaritalModel isOpen={isMaritalModalOpen} onClose={closeMaritalModal} />
+
     <Card>
       <Card.Header className='d-sm-flex justify-content-between align-items-center d-block'>
         <Card.Title className='mb-3 mb-sm-0'>New Candidate</Card.Title>
@@ -353,19 +372,6 @@ export default function NewEmployee() {
                           }
                         </Form.Group>
                       </div>
-                      {/* <div className='col-md-3'>
-                          <div className="form-group">
-                              <Form.Label htmlFor='FirstName'>First name <span className='text-danger'>*</span></Form.Label>
-                              <input className="form-control" id='FirstName' name="FirstName" required type="text" placeholder="Enter first name" 
-                                  onChange={on_submit.handleChange} onBlur={on_submit.handleBlur}
-                              />
-                              {                              
-                                on_submit.touched.FirstName && on_submit.errors.FirstName ?( 
-                                    <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.FirstName}</p> 
-                                ): null
-                              }
-                          </div>
-                      </div> */}
                       <div className='col-md-4'>
                           <div className="form-group">
                               <Form.Label htmlFor='MiddleName'>Middle name</Form.Label>
@@ -398,6 +404,7 @@ export default function NewEmployee() {
                         <Form.Group>
                           <Form.Label htmlFor='Gender'>Gender <span className='text-danger'>*</span></Form.Label>
                           <Select options={gender} id="Gender" required value={selectedGender} onChange={setSelectedGender} placeholder='choose one' name='Gender' classNamePrefix='Select'/>
+                          <small id="emailHelp" className="form-text text-muted">If want to add a new gender? <span onClick={openGenderModal} style={{cursor: 'pointer'}}>Click here</span></small>
                           {                              
                             errors.Gender.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
                           }
@@ -407,6 +414,7 @@ export default function NewEmployee() {
                         <Form.Group>
                           <Form.Label htmlFor='BloodGroup'>Blood group <span className='text-danger'>*</span></Form.Label>
                           <Select options={bloodGroup} id='BloodGroup' value={selectedBlood} onChange={setSelectedBlood} name='BloodGroup' placeholder='choose one' classNamePrefix='Select' />
+                          <small id="emailHelp" className="form-text text-muted">If want to add a new blood group? <span onClick={openBloodModal} style={{cursor: 'pointer'}}>Click here</span></small>
                           {                              
                             errors.BloodGroup.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
                           }
@@ -552,6 +560,7 @@ export default function NewEmployee() {
                         <Form.Group>
                           <Form.Label htmlFor='MaritalStatus'>Marital status <span className='text-danger'>*</span></Form.Label>
                           <Select options={marital} id='MaritalStatus' value={selectedMarital} onChange={setSelectedMarital} name='MaritalStatus' placeholder='choose one' classNamePrefix='Select' />
+                          <small id="emailHelp" className="form-text text-muted">If want to add a new marital? <span onClick={openMaritalModal} style={{cursor: 'pointer'}}>Click here</span></small>
                           {                              
                             errors.MaritalStatus.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
                           }

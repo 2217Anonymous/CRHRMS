@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion,Card,Form, InputGroup } from 'react-bootstrap';
-import PageHeader from '../../layouts/PageHeader/PageHeader';
+import { Accordion,Form, InputGroup } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Select from 'react-select';
-import { GETBLOOD, GETGENDER, GETMARITAL } from '../../services/api/Master';
-import axios from 'axios';
-import { getComId, getUserData } from '../../services/storage/Storage';
+import { getComId } from '../../services/storage/Storage';
 import Loader from '../../services/loader/Loader';
 import { GETEDITCANDIDATE, GETRESUMEMASTERID, NEWCANDIDATE } from '../../services/api/Hrms';
 import { isAuthenticated } from '../../services/Auth';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from '@mui/material';
 import { ToastLeft } from '../../services/notification/Notification';
 import { ToastContainer } from 'react-toastify';
-import { checkPermission } from '../../services/Permission';
-import AuthError from '../authentication/errorPage/AuthError/AuthError';
-
-const authToken = getUserData()
+import GenderModel from '../../pages/master/models/GenderModel';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchGenderData } from '../../Redux/slice/Master/Gender';
+import BloodModel from '../../pages/master/models/BloodModel';
+import MaritalModel from '../../pages/master/models/MaritalModel';
+import { fetchBloodGroupData } from '../../Redux/slice/Master/BloodGroup';
+import { fetchMaritalData } from '../../Redux/slice/Master/Marital';
 
 export default function UpdateCandidate(props) {
   const navigate = useNavigate()
   const {Param} = useParams()
+  const dispatch = useDispatch()
+
   const [editSalutOption,setEditSalutOption] = useState({
     value : '',
     label : '',
@@ -126,7 +127,6 @@ export default function UpdateCandidate(props) {
   }; 
 
   //GENDER
-  const [gender,setGender] = useState([])
   const [genderId,setGenderId] = useState('')
   const [selectedGender,setSelectedGender] = useState()
   const handleGenderChange = (event) => {
@@ -135,7 +135,6 @@ export default function UpdateCandidate(props) {
   }; 
   
   //MARITAL
-  const [marital,setMarital] = useState([])
   const [martialId,setMartialId] = useState('')
   const [selectedMarital,setSelectedMarital] = useState()
   const handleMartialChange = (event) => {
@@ -144,7 +143,6 @@ export default function UpdateCandidate(props) {
   }; 
 
   //BLOOD GROUP
-  const [bloodGroup,setBloodGroup] = useState([])
   const [bloodGroupId,setBloodGroupId] = useState('')
   const [selectedBlood,setSelectedBlood] = useState()
   const handleBloodChange = (event) => {
@@ -159,35 +157,9 @@ export default function UpdateCandidate(props) {
   }
 
   //GET API
-  const getGender = (() => {
-    try {
-          GETGENDER().then((res) => {
-            setGender(res.data.Data)
-        })
-    } catch (error) {
-        console.log(error);
-    }
-  })
-
-  const getBlood = (() => {
-    try {
-          GETBLOOD().then((res) => {
-            setBloodGroup(res.data.Data)
-        })
-    } catch (error) {
-        console.log(error);
-    }
-  })
-
-  const getMirital = (() => {
-    try {
-          GETMARITAL().then((res) => {
-            setMarital(res.data.Data)
-        })
-    } catch (error) {
-        console.log(error);
-    }
-  })
+  const gender_list     = useSelector((state) => state.gender.genderList.Data)
+  const bloodGroupList  = useSelector((state) => state.bloodGroup.bloodGroupList.Data)
+  const matrial_list    = useSelector((state) => state.marital.maritalList.Data)
 
   const getMasterId = () => {
     GETRESUMEMASTERID().then(res => {
@@ -259,10 +231,6 @@ export default function UpdateCandidate(props) {
   const onSubmit = values => {
     let errors    = initialStateErrors
     let hasError  = false
-
-    console.log("==================================");
-    console.log(selectedSalut,selectedGender,selectedBlood,selectedMarital,selectedLicenceType);
-    console.log("==================================");
 
     const dob = Datevalue.$y + "/" + parseInt(Datevalue.$M + 1) + "/" + Datevalue.$D
 
@@ -341,27 +309,56 @@ export default function UpdateCandidate(props) {
   })
 
   useEffect(() => {
-      axios.interceptors.request.use(
-        config => {
-            config.headers.authorization = `Bearer ${authToken}`;
-            return config;
-        },
-        error => {
-            return Promise.reject(error);
-    })
       getEditCanditate()
-      getGender()
-      getBlood()
-      getMirital()
       getMasterId()
   },[])
+
+  const [isGenderModalOpen, setIsGenderModalOpen]   = useState(false);
+  const [isBloodModalOpen, setIsBloodModalOpen]     = useState(false);
+  const [isMaritalModalOpen, setIsMaritalModalOpen] = useState(false);
+
+  const openGenderModal = () => {
+    setIsGenderModalOpen(true);
+  };
+
+  const openBloodModal = () => {
+    setIsBloodModalOpen(true);
+  };
+
+  const openMaritalModal = () => {
+    setIsMaritalModalOpen(true);
+  };
+
+  const closeGenderModal = () => {
+    setIsGenderModalOpen(false);
+  };
+
+  const closeBloodModal = () => {
+    setIsBloodModalOpen(false);
+  };
+
+  const closeMaritalModal = () => {
+    setIsMaritalModalOpen(false);
+  };
+
+  useEffect(() => {
+    dispatch(fetchGenderData())  
+    dispatch(fetchBloodGroupData())  
+    dispatch(fetchMaritalData())  
+  },[dispatch])
 
   if(!isAuthenticated()){
     navigate('/')
   }
+
   return (
     <>
         <ToastContainer />
+
+        <GenderModel  isOpen={isGenderModalOpen}  onClose={closeGenderModal} />
+        <BloodModel   isOpen={isBloodModalOpen}   onClose={closeBloodModal} />
+        <MaritalModel isOpen={isMaritalModalOpen} onClose={closeMaritalModal} />
+
         <div className='panel-group1'>
           {/* PERSONAL */}
           <div className='mb-4'>
@@ -437,7 +434,7 @@ export default function UpdateCandidate(props) {
                           <Form.Label htmlFor='Gender'>Gender <span className='text-danger'>*</span></Form.Label>
                           <select className='form-control' value={genderId} onChange={handleGenderChange} required={true} name="Gender">
                           {
-                              gender.map((dt) => {
+                            gender_list && gender_list.filter(dt => dt.IsActive).map((dt) => {
                                   return(
                                       <option key={dt.Id} value={dt.Id}>
                                           {dt.GenName}
@@ -446,6 +443,7 @@ export default function UpdateCandidate(props) {
                               })
                           }
                           </select>
+                          <small id="emailHelp" className="form-text text-muted">If want to add a new gender? <span onClick={openGenderModal} style={{cursor: 'pointer'}}>Click here</span></small>
                           {                              
                             errors.Gender.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
                           }
@@ -456,9 +454,10 @@ export default function UpdateCandidate(props) {
                           <Form.Label htmlFor='BloodGroup'>Blood group <span className='text-danger'>*</span></Form.Label>
                           <select className='form-control' value={bloodGroupId} onChange={handleBloodChange} required={true} name="BloodGroup">
                             {
-                              bloodGroup.map(dt => <option key={dt.Id} value={dt.Id}>{dt.Name}</option>)
+                              bloodGroupList && bloodGroupList.filter(dt => dt.IsActive).map(dt => <option key={dt.Id} value={dt.Id}>{dt.Name}</option>)
                             }
                           </select>
+                          <small id="emailHelp" className="form-text text-muted">If want to add a new blood group? <span onClick={openBloodModal} style={{cursor: 'pointer'}}>Click here</span></small>
                           {                              
                             errors.BloodGroup.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
                           }
@@ -605,9 +604,10 @@ export default function UpdateCandidate(props) {
                           <Form.Label htmlFor='MaritalStatus'>Marital status <span className='text-danger'>*</span></Form.Label>
                           <select className='form-control' value={martialId} onChange={handleMartialChange} required={true} name="MaritalStatus">
                             {
-                              marital.map(dt => <option key={dt.Id} value={dt.Id}>{dt.Name}</option>)
+                              matrial_list && matrial_list.filter(dt => dt.IsActive).map(dt => <option key={dt.Id} value={dt.Id}>{dt.Name}</option>)
                             }
                           </select>
+                          <small id="emailHelp" className="form-text text-muted">If want to add a new marital? <span onClick={openMaritalModal} style={{cursor: 'pointer'}}>Click here</span></small>
                           {                              
                             errors.MaritalStatus.required ? <p style={{fontSize:'14px'}} className='text-danger'>Field is required</p> : null
                           }

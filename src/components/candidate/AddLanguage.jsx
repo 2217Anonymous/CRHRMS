@@ -155,7 +155,7 @@ export default function AddLanguage(props) {
     <Col xl={12} md={12}>
       {Initialshow ? <>
           <div className="card-options d-flex justify-content-end">
-            <button className='btn btn-sm btn-success' onClick={InitialHandleExpandClick}> Add New Language <i className={`fe ${InitialExpanded ? 'fe-chevron-up' : 'fe-chevron-down'}`}></i></button>
+            <button className='btn btn-sm btn-outline-success' onClick={InitialHandleExpandClick}> Add New Language <i className={`fe ${InitialExpanded ? 'fe-chevron-up' : 'fe-chevron-down'}`}></i></button>
           </div>
         
         <Collapse in={InitialExpanded} timeout={2000}>

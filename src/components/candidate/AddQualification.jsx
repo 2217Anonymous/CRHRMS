@@ -74,7 +74,7 @@ export default function AddQualification(props) {
     useEffect(() => {
         const getQualification = (() => {
             if (qualificationList) {
-                const drobValue = qualificationList.filter(dt => dt.IsActive === true).map((res) => ({
+                const drobValue = qualificationList.filter(dt => dt.IsActive).map((res) => ({
                     value : res.Id,
                     label : res.Qualification                    
                 }))
