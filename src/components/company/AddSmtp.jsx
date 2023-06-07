@@ -4,15 +4,16 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup'
 import { ADD_SMTP, GET_COMPANY_SMTP } from '../../services/api/Company';
 import { ToastLeft } from '../../services/notification/Notification';
+import Loader from '../../services/loader/Loader';
 
 
 export default function AddSmtp(props) {
 
-    const [loading,setLoading] = useState(false)    
-    const [ssl, setSsl] = useState(false);
-    const [smtpData,setSmtpData] = useState([])
-    const [id,setId] = useState()
-    const [companyId,setCompanyId] = useState()
+    const [loading,setLoading]      = useState(false)    
+    const [ssl, setSsl]             = useState(false);
+    const [smtpData,setSmtpData]    = useState([])
+    const [id,setId]                = useState()
+    const [companyId,setCompanyId]  = useState()
 
     const handleCheckboxChange = (event) => {
         setSsl(event.target.checked);
@@ -32,11 +33,11 @@ export default function AddSmtp(props) {
     })
 
     const oldInitialValues = {
-        userName    : smtpData.UserName,
-        displayName : smtpData.DisplayName,
-        password    : smtpData.Password,
-        host        : smtpData.Host,
-        port        : smtpData.Port,
+        userName    : smtpData && smtpData.UserName,
+        displayName : smtpData && smtpData.DisplayName,
+        password    : smtpData && smtpData.Password,
+        host        : smtpData && smtpData.Host,
+        port        : smtpData && smtpData.Port,
     }
     
     const newInitialValues = {
@@ -60,6 +61,7 @@ export default function AddSmtp(props) {
     //Submit Data
     const onSubmit = values => {
         ADD_SMTP(id,companyId,props.id,values,ssl).then(res => {
+            console.log(res.data);
             const type = res.data.result
             const msg = res.data.Msg 
             if(res.data.result === 'success'){
@@ -69,9 +71,9 @@ export default function AddSmtp(props) {
             }
             else if(res.data.result === 'Failed'){
                 ToastLeft(msg,type)
-                setLoading(true)
+                setLoading(false)
             }
-        }).catch(err => {
+        }).catch(err => {           
 
         })  
     }
@@ -95,7 +97,7 @@ export default function AddSmtp(props) {
                     <div className='col-md-6'>
                         <div className="form-group">
                             <Form.Label>Username</Form.Label>
-                            <input className="form-control" name="userName" defaultValue={smtpData.UserName} type="text" placeholder="Enter username"
+                            <input className="form-control" name="userName" defaultValue={smtpData && smtpData.UserName} type="text" placeholder="Enter username"
                                 onChange={on_submit.handleChange}
                                 onBlur={on_submit.handleBlur}
                             />
@@ -109,7 +111,7 @@ export default function AddSmtp(props) {
                     <div className='col-md-6'>
                         <div className="form-group">
                             <Form.Label>Displayname</Form.Label>
-                            <input className="form-control" name="displayName" defaultValue={smtpData.DisplayName} type="text" placeholder="Enter displayname"
+                            <input className="form-control" name="displayName" defaultValue={smtpData && smtpData.DisplayName} type="text" placeholder="Enter displayname"
                                 onChange={on_submit.handleChange}
                                 onBlur={on_submit.handleBlur}
                             />
@@ -126,7 +128,7 @@ export default function AddSmtp(props) {
                     <div className='col-md-6'>
                         <div className="form-group">
                             <Form.Label>Password</Form.Label>
-                            <input className="form-control" name="password" defaultValue={smtpData.Password} type="password" placeholder="Enter password"
+                            <input className="form-control" name="password" defaultValue={smtpData && smtpData.Password} type="password" placeholder="Enter password"
                                 onChange={on_submit.handleChange}
                                 onBlur={on_submit.handleBlur}
                             />
@@ -140,7 +142,7 @@ export default function AddSmtp(props) {
                     <div className='col-md-6'>
                         <div className="form-group">
                             <Form.Label>Host</Form.Label>
-                            <input className="form-control" name="host"  defaultValue={smtpData.Host} type="text" placeholder="Enter host"
+                            <input className="form-control" name="host"  defaultValue={smtpData && smtpData.Host} type="text" placeholder="Enter host"
                                 onChange={on_submit.handleChange}
                                 onBlur={on_submit.handleBlur}
                             />
@@ -157,7 +159,7 @@ export default function AddSmtp(props) {
                     <div className='col-md-6'>
                         <div className="form-group">
                             <Form.Label>Port</Form.Label>
-                            <input className="form-control" name="port" defaultValue={smtpData.Port} type="text" placeholder="Enter port no"
+                            <input className="form-control" name="port" defaultValue={smtpData && smtpData.Port} type="text" placeholder="Enter port no"
                                 onChange={on_submit.handleChange}
                                 onBlur={on_submit.handleBlur}
                             />
@@ -186,7 +188,7 @@ export default function AddSmtp(props) {
                     </div>
           
                 <div className="submit text-end">
-                    { loading ? "loading..." : <>
+                    { loading ? <Loader /> : <>
                         <Button variant="danger" onClick={on_submit.handleReset}>
                             Close
                         </Button> { }

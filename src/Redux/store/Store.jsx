@@ -10,6 +10,7 @@ import genderReducer        from '../slice/Master/Gender'
 import documentReducer      from '../slice/Master/Document'
 import maritalReducer       from '../slice/Master/Marital'
 import workTypeReducer      from '../slice/Master/WorkType'
+import locationReducer      from '../slice/Master/Location'
 
 const store = configureStore({
     reducer : {
@@ -24,6 +25,7 @@ const store = configureStore({
         gender          : genderReducer,
         marital         : maritalReducer,
         workType        : workTypeReducer,
+        location        : locationReducer,
     }
 })
 

@@ -3,15 +3,11 @@ import { Button, Form } from 'react-bootstrap'
 import { useFormik } from 'formik';
 import * as Yup from 'yup'
 import { useEffect } from 'react';
-import axios from 'axios';
-import { getUserData } from '../../services/storage/Storage';
 import { CityList, CountryList, StateList } from '../../services/api/Utility';
 import { EDIT_COMPANY, NEW_COMPANY } from '../../services/api/Company';
 import { ToastLeft } from '../../services/notification/Notification';
 import Loader from '../../services/loader/Loader';
 import { useNavigate } from 'react-router-dom';
-
-const authToken = getUserData()
 
 export default function UpdateCompany(props) {
 
@@ -66,15 +62,6 @@ const getCountry = (() => {
 })
 
 useEffect(() => {
-    axios.interceptors.request.use(
-        config => {
-            config.headers.authorization = `Bearer ${authToken}`;
-            return config;
-        },
-        error => {
-            return Promise.reject(error);
-    })
-
     CityList(stateId).then(res => {
         setCity(res.data.Data)
     })
@@ -112,14 +99,6 @@ const getCompany = (() => {
 
 //Hooks Management
 useEffect(() => {
-    axios.interceptors.request.use(
-        config => {
-            config.headers.authorization = `Bearer ${authToken}`;
-            return config;
-        },
-        error => {
-            return Promise.reject(error);
-    })
     getCompany()
     getCountry()
 },[])
@@ -140,6 +119,9 @@ const oldInitialValues =  {
     registrationNo      : data.RegistrationNo,
     panNo               : data.PanNao,
     gstin               : data.GstIn, 
+    country             : data.Country,
+    state               : data.State,
+    city                : data.City,
     isCrmhave           : data.IsCrmHave,
     userRegisterApi     : data.UserRegisterApi, 
     userRegisterData    : data.UserRegisterData, 
@@ -206,7 +188,6 @@ const additionalValues = {
 const onSubmit = values => {
     const data = {...values,...additionalValues}
     NEW_COMPANY(data).then(res => {
-        console.log(data);
         const type = res.data.result
         const msg = res.data.Msg
         if(res.data.result === 'success'){
@@ -456,7 +437,6 @@ return (
                               })
                           }  
                       </select>
-                      <p>{cityId}</p>
                       {                              
                           on_submit.touched.city &&  on_submit.errors.city ?( 
                               <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.city}</p> 

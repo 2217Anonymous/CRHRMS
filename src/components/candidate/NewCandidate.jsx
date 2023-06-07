@@ -117,10 +117,10 @@ export default function NewEmployee() {
   const [selectedGender,setSelectedGender] = useState()
   
   //MARITAL
-  const [selectedMarital,setSelectedMarital] = useState([])
+  const [selectedMarital,setSelectedMarital] = useState()
 
   //BLOOD GROUP
-  const [selectedBlood,setSelectedBlood] = useState([])
+  const [selectedBlood,setSelectedBlood] = useState()
 
   //RESUME
   const [resume,setResume] = useState('')
@@ -168,7 +168,7 @@ export default function NewEmployee() {
     getGender()
     getBlood()
     getMarital()
-},[gender_list,bloodGroupList,matrial_list,dispatch])
+  },[gender_list,bloodGroupList,matrial_list,dispatch])
   
 
   const getMasterId = () => {
@@ -740,7 +740,7 @@ export default function NewEmployee() {
                       </div>
                       <div className='col-md-3'>
                         <div className="form-group">
-                        <Form.Label><br></br></Form.Label>
+                          <Form.Label><br></br></Form.Label>
                           have License ? <span className='text-danger'>*</span>
                             <div className="material-switch pull-right">
                                 <input id="isLicense" name="IsLicenseHave" checked={isLicence} type="checkbox"

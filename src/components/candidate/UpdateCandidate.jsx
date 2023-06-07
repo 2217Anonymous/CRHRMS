@@ -85,6 +85,7 @@ export default function UpdateCandidate(props) {
   const [permanentAddress, setPermanentAddress] = useState('');
   const [presentAddress, setPresentAddress] = useState('');
   const [sameAddress, setSameAddress] = useState(false);
+
   const handlePermanentAddressChange = (event) => {
     const { value } = event.target;
     setPermanentAddress(value);
@@ -92,6 +93,7 @@ export default function UpdateCandidate(props) {
       setPresentAddress(value);
     }
   }
+
   const handleSameAddressChange = (event) => {
     const { checked } = event.target;
     setSameAddress(checked);
@@ -540,12 +542,15 @@ export default function UpdateCandidate(props) {
                   <section>
                     <div className='row'>
                       <div className='col-md-6'>
-                        <div className="form-group">
+                        <div className="form-group">  
                           <Form.Label htmlFor='FatherName'>Father name <span className='text-danger'>*</span></Form.Label>
-                          <input className="form-control" id='FatherName' defaultValue={data.FatherName} name="FatherName" required type="text" placeholder="Enter father name" 
-                            onChange={on_submit.handleChange}
-                            onBlur={on_submit.handleBlur}
+                          <InputGroup className='my-3'>
+                              <input className="form-control" id='FatherName' defaultValue={data.FatherName} name="FatherName" required type="text" placeholder="Enter father name" 
+                                onChange={on_submit.handleChange}
+                                onBlur={on_submit.handleBlur}
                           />
+                          </InputGroup>
+
                           {                              
                             on_submit.touched.FatherName  &&  on_submit.errors.FatherName  ?( 
                                 <p style={{fontSize:'14px'}} className='text-danger'>{on_submit.errors.FatherName }</p> 

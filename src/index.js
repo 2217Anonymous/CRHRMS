@@ -79,7 +79,6 @@ root.render(
                     <Route path={`/newuser`} element={<NewUser />}></Route>
                     <Route path="/edituser/:Param" element={<EditUser />}></Route>
                     <Route path="/permission" element={<Permission />}></Route>
-                    <Route path="/test" element={<Test />}></Route>
                   </Route>
 
                   <Route>
@@ -109,6 +108,8 @@ root.render(
                   <Route path={`/forgotpassword`} element={<ForgotPassword />} />
                   <Route path="/resetpassword/:code" element={<ResetPassword />}/>
                   <Route path={`/lockscreen`} element={<LockScreen />} />
+                  <Route path="/test" element={<Test />}></Route>
+
                 </Route>
 
                 <Route>

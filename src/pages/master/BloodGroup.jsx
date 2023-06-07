@@ -45,7 +45,7 @@ export default function Blood() {
         setIsModalOpen(false);
     };
 
-    const bloodGroupList = useSelector((state) => state.bloodGroup.bloodGroupList.Data)
+    const bloodGroupList = useSelector((state) => state.bloodGroup.bloodGroupList.c)
 
     useEffect(() => {
         dispatch(fetchBloodGroupData())

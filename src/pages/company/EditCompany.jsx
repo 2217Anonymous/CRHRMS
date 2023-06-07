@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import PageHeader from '../../layouts/PageHeader/PageHeader'
 import { Card, Col, Nav, Row, Tab } from 'react-bootstrap'
@@ -24,6 +24,9 @@ export default function EditCompany() {
       <Card>
         <Card.Header>
           <Card.Title as="h3" className="mb-0">Edit Company</Card.Title>
+          {
+            checkPermission('Companies_List') ? <Link to={'/companies'} style={{float:'right'}} className='d-flex ms-auto mx-2 btn btn-outline-success'>Company List</Link> : ''
+          }
         </Card.Header>
         <Card.Body className="pt-4">
           <Row>

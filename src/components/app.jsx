@@ -10,7 +10,6 @@ import Switcher from '../layouts/Switcher/Switcher';
 import { getUserData } from '../services/storage/Storage';
 import axios from 'axios';
 import { isAuthenticated } from '../services/Auth';
-import { ErrorBoundary } from 'react-error-boundary';
 
 const App = () => {
 
@@ -34,7 +33,7 @@ const App = () => {
   return(
 
   <Fragment>
-    <ErrorBoundary fallback={ErrorFallbackComponent}>
+    {/* <ErrorBoundary fallback={ErrorFallbackComponent}> */}
         <div className='horizontalMenucontainer' >
           <Switcher />
           <div className="page">
@@ -57,15 +56,9 @@ const App = () => {
           <Rightside />
           <BacktoTop />
         </div>
-    </ErrorBoundary>
+    {/* </ErrorBoundary> */}
   </Fragment>
 )
 };
-
-const ErrorFallbackComponent = ({error}) => {
-  return(
-    <p>Somthing went wrong </p>
-  )
-}
 
 export default App;

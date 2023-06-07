@@ -60,7 +60,6 @@ export default function CandidateHistory(props) {
                 </div>
             </PerfectScrollbar>
             </Card.Body>
-        
       </Card> 
     </>
   )

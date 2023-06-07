@@ -86,7 +86,7 @@ export default function DocumentModel({isOpen, onClose}) {
         </Modal.Body>
         <Modal.Footer>
         {
-            loading ? (
+            !loading ? (
                 <>
                     <Button variant="success" onClick={on_submit.handleSubmit}>
                         Save Changes

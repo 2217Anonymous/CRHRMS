@@ -5,9 +5,6 @@ import { ToastContainer } from 'react-toastify'
 import { useFormik } from 'formik';
 import * as Yup from 'yup'
 import { useEffect } from 'react';
-import axios from 'axios';
-import { getUserData } from '../../services/storage/Storage';
-import { CityList, CountryList, StateList } from '../../services/api/Utility';
 import { NEW_COMPANY } from '../../services/api/Company';
 import { ToastLeft } from '../../services/notification/Notification';
 import { Link, useNavigate } from 'react-router-dom';
@@ -15,69 +12,34 @@ import Loader from '../../services/loader/Loader';
 import { checkPermission } from '../../services/Permission';
 import AuthError from '../authentication/errorPage/AuthError/AuthError';
 import { isAuthenticated } from '../../services/Auth';
-
-const authToken = getUserData()
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCityData, fetchCountryData, fetchStateData } from '../../Redux/slice/Master/Location';
 
 export default function AddCompany() {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     //State Management
     const [isCrm, setIsCrm] = useState(false)
     const [loading,setLoading] = useState(false)
-    const [country,setCountry] = useState([])
-    const [state,setState] = useState([])
-    const [city,setCity] = useState([])
-    const [selectedCountry,setSelectedCountry] = useState([])
-    const [selectedState, setSelectedState] = useState('')
+    const [selectedCountry,setSelectedCountry] = useState()
+    const [selectedState,setSelectedState] = useState()
 
     //HANDLE ON CHANGE
-    const handleCheckboxChange = (event) => {
-        setIsCrm(event.target.checked);
+    const handleCheckboxChange  = (event) => setIsCrm(event.target.checked)
+    const handleCountryChange   = (event) => {
+        setSelectedCountry(event.target.value)
+        dispatch(fetchStateData(event.target.value))
     }
-
-    const handleCountryChange = (event) => {
-        setSelectedCountry(event.target.value);
-        getState(event.target.value)
-    }
-
-    const handleStateChange = (event) => {
-        setSelectedState(event.target.value);
-        getCity(event.target.value)
+    const handleStateChange     = (event) =>{ 
+        setSelectedState(event.target.value)
+        dispatch(fetchCityData(event.target.value))
     }
 
     //FETCH API DATA
-    const getCountry = (() => {
-        CountryList().then(res => {
-            setCountry(res.data.Data)
-        }).catch(err => {
-            console.log(err);
-        })
-    })
-
-    const getState = ((countryId) => {
-        StateList(countryId).then(res => {
-            setState(res.data.Data)
-        })
-    })
-
-    const getCity = ((stateId) => {
-        CityList(stateId).then(res => {
-            setCity(res.data.Data)
-        })
-    })
-
-    //Hooks Management
+    const { countries, states, cities } = useSelector((state) => state.location);
     useEffect(() => {
-        axios.interceptors.request.use(
-            config => {
-                config.headers.authorization = `Bearer ${authToken}`;
-                return config;
-            },
-            error => {
-                return Promise.reject(error);
-        })
-        
-        getCountry()
-    },[])
+        dispatch(fetchCountryData())
+    },[dispatch])
 
     //Initial values
     const initialValues =  {
@@ -105,25 +67,25 @@ export default function AddCompany() {
 
     //Validation
     const validationSchema = Yup.object({
-        compName            : Yup.string().required('Company name is required').min(3,'Minimum 3 characters'),
-        shortName           : Yup.string().max(10,"Maximum 10 characters"),
-        empCodePrefix       : Yup.string().required('Employee code required').min(3,'Minimum 3 characters').max(3,"Maximum 3 characters"),
-        empCodeSufix        : Yup.string().min(3,'Minimum 3 characters').max(3,"Maximum 3 characters"),
-        mobileNo            : Yup.string().required('Mobile number required').min(10,'Minimum 10 digit').max(10,'Maximum 10 digit'),
-        phoneNo             : Yup.string().min(10,'Minimum 10 digit').max(10,'Maximum 10 digit'),
-        email               : Yup.string().email().required('Email is required').max(100,'Maximum 100 characters'),
-        address             : Yup.string().required('Address required'),
-        city                : Yup.string().required('City required'),
-       // state               : Yup.string().required('State required'),
-        //country             : Yup.string().required('Country required'),
-        postcode            : Yup.string().required('Postcode required').min(6,"Minimium 6 characters").max(6,'Maximum 6 characters'),
-        geoLoc              : Yup.string().required('Register api required'),
-        panNo               : Yup.string().max(10,"Maximum 10 characters"),
-        gstin               : Yup.string().max(15,"Maximum 15 characters"),
-        userRegisterApi     : isCrm ? Yup.string().required('Register api required') : '',
-        userRegisterData    : isCrm ? Yup.string().required('Register data required') : '',
-        userDeactivateApi   : isCrm ? Yup.string().required('Deactive api required') : '',
-        userDeactivateData  : isCrm ? Yup.string().required('Deactive data required') : ''
+    //     compName            : Yup.string().required('Company name is required').min(3,'Minimum 3 characters'),
+    //     shortName           : Yup.string().max(10,"Maximum 10 characters"),
+    //     empCodePrefix       : Yup.string().required('Employee code required').min(3,'Minimum 3 characters').max(3,"Maximum 3 characters"),
+    //     empCodeSufix        : Yup.string().min(3,'Minimum 3 characters').max(3,"Maximum 3 characters"),
+    //     mobileNo            : Yup.string().required('Mobile number required').min(10,'Minimum 10 digit').max(10,'Maximum 10 digit'),
+    //     phoneNo             : Yup.string().min(10,'Minimum 10 digit').max(10,'Maximum 10 digit'),
+    //     email               : Yup.string().email().required('Email is required').max(100,'Maximum 100 characters'),
+    //     address             : Yup.string().required('Address required'),
+    //     city                : Yup.string().required('City required'),
+    //    // state               : Yup.string().required('State required'),
+    //     //country             : Yup.string().required('Country required'),
+    //     postcode            : Yup.string().required('Postcode required').min(6,"Minimium 6 characters").max(6,'Maximum 6 characters'),
+    //     geoLoc              : Yup.string().required('Register api required'),
+    //     panNo               : Yup.string().max(10,"Maximum 10 characters"),
+    //     gstin               : Yup.string().max(15,"Maximum 15 characters"),
+    //     userRegisterApi     : isCrm ? Yup.string().required('Register api required') : '',
+    //     userRegisterData    : isCrm ? Yup.string().required('Register data required') : '',
+    //     userDeactivateApi   : isCrm ? Yup.string().required('Deactive api required') : '',
+    //     userDeactivateData  : isCrm ? Yup.string().required('Deactive data required') : ''
     })
 
     //Additional Data
@@ -145,12 +107,10 @@ export default function AddCompany() {
                 on_submit.resetForm()
             }
             else if(res.data.result === 'Failed'){
-                console.log(res.data.Msg);
                 ToastLeft(msg,type)
                 setLoading(true)
             }
         }).catch(err => {
-            console.log(err);
             ToastLeft(err.message,"Failed");
         }).finally(() => {
             setLoading(false)
@@ -168,6 +128,7 @@ export default function AddCompany() {
     if(!isAuthenticated()){
         navigate('/')
     }
+
   return (
     <>
       <PageHeader titles="" active="company" items={['Home']} />
@@ -345,7 +306,7 @@ export default function AddCompany() {
                                     <select className='form-control Select' required={true} name="country" onChange={handleCountryChange}>
                                         <option value="">Select country</option>  
                                         {
-                                            country.map((dt) => {
+                                            countries.Data && countries.Data.map((dt) => {
                                                 return(
                                                     <option key={dt.Id} value={dt.Id}>
                                                         {dt.Name}
@@ -364,10 +325,10 @@ export default function AddCompany() {
                             <div className='col-md-4'>
                                 <div className="form-group">
                                     <Form.Label>State</Form.Label>
-                                    <select className='form-control' required={true} name="state" disabled={!selectedCountry} onChange={handleStateChange} >
+                                    <select className='form-control' required={true} name="state" onChange={handleStateChange} >
                                         <option value="">Select state</option>  
                                         {
-                                            state.map((dt) => {
+                                            states.Data && states.Data.map((dt) => {
                                                 return(
                                                     <option key={dt.Id} value={dt.Id}>
                                                         {dt.Name}
@@ -386,10 +347,10 @@ export default function AddCompany() {
                             <div className='col-md-4'>
                                 <div className="form-group">
                                     <Form.Label>City</Form.Label>
-                                    <select className='form-control' required={true} name="city" disabled={!selectedState} {...on_submit.getFieldProps('city')} >
+                                    <select className='form-control' required={true} name="city" {...on_submit.getFieldProps('city')} >
                                         <option value="">Select city</option>  
                                         {
-                                            city.map((dt) => {
+                                            cities.Data && cities.Data.map((dt) => {
                                                 return(
                                                     <option key={dt.Id} value={dt.Id}>
                                                         {dt.Name}

@@ -47,7 +47,7 @@ export default function BloodModel({isOpen, onClose}) {
                 <Modal.Title>Blood Group Name</Modal.Title>
                 <span className="d-flex ms-auto" onClick={onClose}><i className='fe fe-x ms-auto' ></i></span>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body>    
                 <Form>
                     <div className="form-group">
                         <Form.Label>Blood Group</Form.Label>

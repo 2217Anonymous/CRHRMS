@@ -49,7 +49,7 @@ export const DELETE_EXPERINCE               = "hrms/deleteexperience";
 export const ADD_QUALIFICATION              = "hrms/addcandidatequalification";
 export const GET_CANDIDATE_QUALIFICATION    = "hrms/qualificationlist";
 export const DELETE_QUALIFICATION           = "hrms/deletequalification";
-export const VIEW_CANDIDATE_URL             = "hrms/viewgandidate"; 
+export const VIEW_CANDIDATE_URL             = "hrms/viewcandidate"; 
 
 export const EMPLOYEE_JOIN_ENTRY            = "hrms/empjoiningentry";
 export const APPLICATION_DOWNLOAD_URL       = 'hrms/applicationdownload';
